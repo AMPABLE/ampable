@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Ampable is an on-chain regulatory framework built for open marketplaces with vested-interest assurance voting that brings the concept of the Assurance Market Protocol (AMP) into the modern decentralized finance (DeFi) landscape. Originally conceptualized in 2017, AMP allowed participants to engage in prediction markets based on real-world asset outcomes. Ampable updates this concept for today's regulatory environment, integrating on-chain compliance and real-time regulatory insights powered by advanced AI systems to facilitate secure and lawful transactions involving real-world assets.
+Ampable is an on-chain, AI-driven regulatory framework built for open marketplaces with vested-interest assurance voting that brings the concept of the Assurance Market Protocol (AMP) into the modern decentralized finance (DeFi) landscape. Originally conceptualized in 2017, AMP allowed participants to engage in prediction markets based on real-world asset outcomes. Ampable updates this concept for today's regulatory environment, integrating on-chain compliance and real-time regulatory insights powered by advanced AI systems to facilitate secure and lawful transactions involving real-world assets.
 
 ## Key Features
 
