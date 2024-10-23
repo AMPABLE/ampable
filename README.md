@@ -6,6 +6,89 @@
 
 Ampable is an on-chain, AI-driven regulatory framework built for open marketplaces with vested-interest assurance voting that brings the concept of the Assurance Market Protocol (AMP) into the modern decentralized finance (DeFi) landscape. Originally conceptualized in 2017, AMP allowed participants to engage in prediction markets based on real-world asset outcomes. Ampable updates this concept for today's regulatory environment, integrating on-chain compliance and real-time regulatory insights powered by advanced AI systems to facilitate secure and lawful transactions involving real-world assets.
 
+## Decentralized Cloud Hosting and GenAI API Key Management
+
+Ampable leverages decentralized cloud computing and advanced AI technologies to provide real-time regulatory information in a secure and trustless manner. This section outlines how Ampable manages API keys securely using Shamir's Secret Sharing, utilizes the Akash Network for decentralized computation, and integrates with Chainlink oracles for reliable data transmission.
+
+### Secure API Key Management with Shamir's Secret Sharing
+
+To ensure the security and privacy of API keys used for accessing AI services like OpenAI's GPT models, Ampable implements **Shamir's Secret Sharing**:
+
+- **Distributed Key Management**: API keys are split into multiple parts (shares) using Shamir's Secret Sharing algorithm.
+- **Threshold Scheme**: A minimum of **20 nodes** is required to reconstruct the original API key, enhancing security against unauthorized access.
+- **Decentralized Storage**: Each share is stored on a different node within the network, preventing any single point of failure or compromise.
+- **Collusion Resistance**: The requirement of multiple nodes to access the API key mitigates the risk of collusion among malicious actors.
+
+### Decentralized Compute with the Akash Network
+
+Ampable utilizes the **Akash Network**, a decentralized cloud computing marketplace, to run its AI-powered regulatory compliance services:
+
+- **Decentralized Hosting**: Node.js applications that interact with AI models are hosted across multiple providers on the Akash Network.
+- **Scalability**: The network's open marketplace allows for dynamic scaling based on computational demand.
+- **Cost Efficiency**: Competitive bidding among providers ensures cost-effective resource utilization.
+- **Continuous Operation**: Smart contracts facilitate automatic renewal and payment for services, ensuring uninterrupted access to regulatory information.
+
+### Integration with Chainlink Oracles
+
+To securely transmit data between the decentralized compute layer and the Ethereum blockchain, Ampable integrates with **Chainlink oracles**:
+
+- **Reliable Data Transmission**: Chainlink oracles enable smart contracts on Ethereum to receive off-chain data from the Akash-hosted AI services.
+- **DAO-Governed Validators**: The **DAO votes on approved Chainlink nodes** (validators) to ensure data integrity and prevent malicious actors.
+- **Tamper-Proof Mechanism**: Chainlink's decentralized network of oracles provides a tamper-resistant method for fetching and delivering data.
+
+### Necessity of Decentralized Compute for AI Calls
+
+Running the AI services on a decentralized network is crucial for:
+
+- **Trustlessness**: Eliminates reliance on centralized entities, aligning with blockchain principles.
+- **Resilience**: Enhances fault tolerance and reduces the risk of service outages or censorship.
+- **Privacy and Security**: Distributes computational tasks, minimizing the exposure of sensitive data like API keys.
+
+### AI-Generated Regulatory Information Workflow
+
+1. **User Interaction**:
+   - Users initiate a transaction that requires regulatory compliance checks.
+   - Before proceeding, they are informed about the need to obtain regulatory information.
+
+2. **Request Processing**:
+   - The DApp sends a request to the decentralized AI service hosted on the Akash Network.
+   - **Cost Mechanism**: Users must pay a fee to prevent Distributed Denial-of-Service (DDoS) attacks and to cover computational expenses.
+
+3. **AI Response**:
+   - The **GPT-based AI models** process the request and generate a regulatory compliance report.
+   - The AI is trained to output responses in **JSON format** for compatibility.
+
+4. **Data Transmission via Oracle**:
+   - The JSON response is sent back to the Ethereum smart contract through Chainlink oracles.
+   - Ensures secure and verifiable data delivery.
+
+5. **User Acknowledgment**:
+   - Users receive the regulatory information within the DApp interface.
+   - They must **digitally sign** to acknowledge that they have reviewed the compliance report before the transaction proceeds.
+   - This acknowledgment is recorded on-chain for transparency and accountability.
+
+### Developer Guidelines and Workflow Transparency
+
+- **Public AI Training Models**: The training data and models for the AI are made publicly available.
+- **Developer Empowerment**: DApp developers can integrate the workflow into their applications and opt to use their own OpenAI API keys if preferred.
+- **Cost Awareness**: By exposing the workflow, developers and users understand the costs involved in obtaining regulatory information.
+- **Preventing Abuse**: The requirement of payment for AI requests deters spamming and misuse of resources.
+
+### Handling Information Variance and User Awareness
+
+- **Dynamic Information**: Regulatory data may vary over time due to changes in laws and regulations.
+- **User Notification**: Users are informed that regulatory information is subject to change and may differ between the time of request and transaction submission.
+- **On-Chain Record**: The specific regulatory information provided to the user is recorded on-chain, ensuring transparency and providing a reference for future audits.
+
+### Summary
+
+By integrating decentralized cloud hosting, secure API key management, and reliable oracle services, Ampable ensures that users have access to accurate and timely regulatory information in a trustless environment. The combination of these technologies upholds the platform's commitment to compliance, security, and decentralization, bridging the gap between real-world regulatory requirements and the decentralized finance ecosystem.
+
+
+ -----------------
+
+
+
 ## Key Features
 
 - **Assurance Market Protocol Integration**: Engage in prediction markets where you can stake on the success or failure of asset thresholds defined by issuers.
