@@ -1,10 +1,22 @@
 # Ampable
 
+*AMP Tokenized Asset Prediction Platform As A Ticketed On-ChainGame*
++
 *An On-Chain Regulatory Platform Supporting the Assurance Market Protocol*
 
 ## Introduction
 
-Ampable is an on-chain, AI-driven regulatory framework built for open marketplaces with vested-interest assurance voting that brings the concept of the Assurance Market Protocol (AMP) into the modern decentralized finance (DeFi) landscape. Originally conceptualized in 2017, AMP allowed participants to engage in prediction markets based on real-world asset outcomes. Ampable updates this concept for today's regulatory environment, integrating on-chain compliance and real-time regulatory insights powered by advanced AI systems to facilitate secure and lawful transactions involving real-world assets.
+Ampable is two things:
+
+- A game whereby users can buy tickets (for example for $5 USDC) and receive rewards (for example NFTs) for predicting whether an asset will reach a certain price by a certain date. This can be for tokenized RWA assets or traditional tokens like wBTC or WETH. Additionally, users can launch tokens. When user's launch tokens tied to real-world assets that others can buy on platforms like Uniswap and predict in-game for, the On-Chain Regulatory Platform is necessary to ensure that the appropriate disclosures are made about those assets, as to strive towards a constantly improving regulatory adherence.
+
+- An on-chain, AI-driven regulatory framework built for open marketplaces with vested-interest assurance voting that brings the concept of the Assurance Market Protocol (AMP) into the modern decentralized finance (DeFi) landscape. Originally conceptualized in 2017, AMP allowed participants to engage in prediction markets based on real-world asset outcomes. Ampable updates this concept for today's regulatory environment, integrating on-chain compliance and real-time regulatory insights powered by advanced AI systems to facilitate secure and lawful transactions involving real-world assets.
+
+
+### User Interface Example of the Ampable Game:
+
+![AMPABLE game](media/files/ampgame.png)
+
 
 ## Decentralized Cloud Hosting and GenAI API Key Management
 
@@ -23,7 +35,7 @@ To ensure the security and privacy of API keys used for accessing AI services li
 
 Ampable utilizes the **Akash Network**, a decentralized cloud computing marketplace, to run its AI-powered regulatory compliance services:
 
-- **Decentralized Hosting**: Node.js applications that interact with AI models are hosted across multiple providers on the Akash Network.
+- **Decentralized Hosting**: Node.js applications that interact with AI models are hosted across multiple providers on the Akash Network (Currently exploring various options as Akash is still early).
 - **Scalability**: The network's open marketplace allows for dynamic scaling based on computational demand.
 - **Cost Efficiency**: Competitive bidding among providers ensures cost-effective resource utilization.
 - **Continuous Operation**: Smart contracts facilitate automatic renewal and payment for services, ensuring uninterrupted access to regulatory information.
