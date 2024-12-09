@@ -1,8 +1,8 @@
 # Ampable
 
-*AMP Tokenized Asset Prediction Platform As A Ticketed On-ChainGame*
-+
-*An On-Chain Regulatory Platform Supporting the Assurance Market Protocol*
+### AMP Tokenized Asset Prediction Platform As A Ticketed On-Chain Game*
+### +
+### An On-Chain Regulatory Platform Supporting the Assurance Market Protocol*
 
 ## Introduction
 
