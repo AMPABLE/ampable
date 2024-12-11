@@ -3,6 +3,8 @@
 **Status: Draft — This is an early-stage prototype under active development.**  
 **Use at your own discretion. For testing, fun, and demonstration purposes only.**
 
+![AMPABLE game](/media/files/ampgame.png)
+
 ## Introduction
 
 This smart contract platform allows participants to skillfully predict the future value of various tokenized assets over a defined time period. Inspired by the experience of winning a teddy bear at a fair game, participants purchase tickets to show their conviction in a particular outcome. At the end of the round, those who predicted correctly can redeem their tickets for “Teddy Bear NFTs.” These NFTs, much like a physical teddy bear prize, can then be conveniently exchanged back for USDC at a known rate, eliminating the need for a third-party resale market.
