@@ -135,6 +135,8 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     event TeddyBearSold(address indexed user, uint256 teddyId, uint256 usdcReceived);
     event TeddyBearMinted(address indexed user, uint256 teddyId);
     event TicketsRedeemedForBears(address indexed user, uint256 assetID, uint256 roundID, uint256 ticketsRedeemed);
+    event TokensWithdrawn(address indexed token, uint256 amount);
+    event ETHWithdrawn(uint256 amount);
 
     // -----------------------
     // Modifiers
@@ -147,9 +149,10 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     // -----------------------
     // Constructor
     // -----------------------
-    constructor(address _usdc, address _daoTreasury) {
+    constructor(address _usdc, address _daoTreasury) ERC165() {
         require(_usdc != address(0), "Invalid USDC address");
-        require(_daoTreasury != address(0), "Invalid DAO treasury");
+        require(_daoTreasury != address(0), "Invalid DAO treasury address");
+
         maintainer = _msgSender();
         daoTreasury = _daoTreasury;
         usdc = IERC20(_usdc);
@@ -327,20 +330,8 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
             userDownStakes[_msgSender()][assetID][roundID] = 0;
         }
 
-        // 1 Ticket ~ 1 bear:
-        // Since tickets were purchased at various prices, we consider them as units of USDC contributed.
-        // Each 1 USDC contributed corresponds to (1 USDC / baseTicketPriceUnit) worth of tickets originally.
-        // But to keep it simple: We say each USDC of stake converts to that many Teddy Bears at a 1:1 ratio with the initial ticket unit.
-        // Actually, to keep it straightforward: Each USDC staked that is on the winning side corresponds to 1 "ticket unit".
-        // We'll say 1 unit of staked USDC = 1 Teddy Bear NFT for simplicity.
-
+        // 1 Teddy Bear per 1 USDC staked
         uint256 bearsToMint = userStake / USDC_DECIMALS;
-        // This means for every 1 USDC staked, user gets 1 teddy bear.
-        // If we want a direct 1:1 per ticket (ticket was USDC-based), we can do this:
-        // If a user put in 50 USDC total, they get 50 bears.
-        // This might be large. Adjust as needed.
-        // For simplicity, let's assume 1 Teddy Bear per USDC. If userStake=5,000,000 (5 USDC?), that yields 5 bears. Perfect.
-
         require(bearsToMint > 0, "No bears to redeem");
 
         // Mint Teddy Bears
@@ -358,6 +349,18 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
         r.bearsDistributed = true;
         emit BearsDistributed(assetID, roundID);
     }
+
+    /**
+    * @notice Withdraws a specified amount of an ERC20 token to the DAO treasury. For tokens accidentally sent or stuck.
+    * @param token The address of the ERC20 token to withdraw.
+    * @param amount The amount of tokens to withdraw.
+    */
+    function withdrawTokens(address token, uint256 amount) external onlyMaintainer nonReentrant {
+        require(token != address(usdc), "Cannot withdraw USDC using this function");
+        IERC20(token).safeTransfer(daoTreasury, amount);
+        emit TokensWithdrawn(token, amount);
+    }
+
 
     function sellTeddyBear(uint256 teddyId) external nonReentrant {
         require(_teddyOwner[teddyId] == _msgSender(), "Not owner");
@@ -407,11 +410,10 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
         return price;
     }
 
-    function supportsInterface(bytes4 interfaceId) public pure override returns (bool) {
-        // Minimalistic
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         // ERC165 Interface
-        // For ERC721: 0x80ac58cd not fully implemented (no marketplace functions), but we have basic ownerOf
-        return interfaceId == type(IERC721).interfaceId || interfaceId == type(ERC165).interfaceId;
+        // ERC721 Interface ID: 0x80ac58cd
+        return interfaceId == type(IERC721).interfaceId || super.supportsInterface(interfaceId);
     }
 
     // ERC721-like functions for Teddy Bears
