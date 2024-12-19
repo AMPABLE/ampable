@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 /**
- * @title TeddyBearPrediction
+ * @title TeddyBearPrediction (No constructor version for zkSync)
  * @notice A skill-based prediction platform where participants buy tickets to predict asset value changes.
  *         Winners receive Teddy Bear NFTs, which can be sold back for USDC.
  *
@@ -39,7 +39,7 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     // -----------------------
     // Roles and Addresses
     // -----------------------
-    address public maintainer;       // Initially deployer, eventually DAO
+    address public maintainer;       // Eventually DAO or trusted maintainer
     address public daoTreasury;      // Receives fees
 
     // -----------------------
@@ -63,9 +63,9 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     // Asset and Round Structs
     // -----------------------
     struct AssetConfig {
-        address assetToken;   // token representing the asset (could be WBTC, or a real-world asset token)
+        address assetToken;   // token representing the asset
         uint256 interval;     // length of the prediction period in seconds
-        bool repeating;       // whether rounds repeat automatically or one-time
+        bool repeating;       // whether rounds repeat automatically
         address priceOracle;  // oracle to fetch price (USDC equivalent)
         bool active;          // active or not
     }
@@ -90,15 +90,13 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     uint256 public assetCount;
     mapping(uint256 => AssetConfig) public assets;
 
-    // Each asset can have multiple rounds
     // assetID => roundID => Round
     mapping(uint256 => mapping(uint256 => Round)) public rounds;
 
-    // User stakes: user => assetID => roundID
+    // user => assetID => roundID => stake
     mapping(address => mapping(uint256 => mapping(uint256 => uint256))) public userUpStakes;
     mapping(address => mapping(uint256 => mapping(uint256 => uint256))) public userDownStakes;
 
-    // Mapping of proposed assets waiting for approval
     struct AssetProposal {
         address assetToken;
         uint256 interval;
@@ -110,13 +108,11 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     mapping(uint256 => AssetProposal) public proposals;
 
     // Teddy Bear NFT logic
-    // A simple ERC721-like minting: each winner gets 1 NFT per winning ticket.
-    // We'll track:
     uint256 private _nextTeddyId;
     mapping(uint256 => address) private _teddyOwner; // tokenId => owner
     mapping(address => uint256) private _teddyBalance;
-    // No metadata on-chain for simplicity, would normally have tokenURI logic.
-    // Burn on sell-back.
+
+    bool private initialized;
 
     // -----------------------
     // Events
@@ -146,16 +142,23 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
         _;
     }
 
+    modifier notInitialized() {
+        require(!initialized, "Already initialized");
+        _;
+    }
+
     // -----------------------
-    // Constructor
+    // Initialization
     // -----------------------
-    constructor(address _usdc, address _daoTreasury) ERC165() {
+    function initialize(address _usdc, address _daoTreasury, address _maintainer) external notInitialized {
         require(_usdc != address(0), "Invalid USDC address");
         require(_daoTreasury != address(0), "Invalid DAO treasury address");
+        require(_maintainer != address(0), "Invalid maintainer address");
 
-        maintainer = _msgSender();
-        daoTreasury = _daoTreasury;
         usdc = IERC20(_usdc);
+        daoTreasury = _daoTreasury;
+        maintainer = _maintainer;
+        initialized = true;
     }
 
     // -----------------------
@@ -263,27 +266,21 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
             revert("Past cutoff time");
         }
 
-        // Calculate ticket price
         uint256 cutoffTime = (config.interval * CUTOFF_PERCENT_BPS) / 10000;
         if (elapsed > cutoffTime) {
             elapsed = cutoffTime;
         }
-        // p(t) = 5 USDC + (5 USDC * elapsed / cutoffTime)
-        // Using integer math:
-        uint256 variablePart = (5 * USDC_DECIMALS * elapsed) / cutoffTime; // 5 * USDC_DECIMALS = 5e6
-        uint256 currentTicketPrice = BASE_TICKET_PRICE + variablePart; // ranges from 5e6 to almost 10e6
-
+        uint256 variablePart = (5 * USDC_DECIMALS * elapsed) / cutoffTime;
+        uint256 currentTicketPrice = BASE_TICKET_PRICE + variablePart;
         uint256 totalCost = currentTicketPrice * ticketCount;
         uint256 fee = (totalCost * ticketFeeBps) / 10000;
         uint256 amountAfterFee = totalCost - fee;
 
-        // If first purchase, capture initial price
         if (!r.priceCaptured) {
             r.priceCaptured = true;
             r.initialPrice = getPriceFromOracle(config.priceOracle, config.assetToken);
         }
 
-        // Transfer funds
         usdc.safeTransferFrom(_msgSender(), address(this), totalCost);
         if (fee > 0) {
             usdc.safeTransfer(daoTreasury, fee);
@@ -330,11 +327,9 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
             userDownStakes[_msgSender()][assetID][roundID] = 0;
         }
 
-        // 1 Teddy Bear per 1 USDC staked
         uint256 bearsToMint = userStake / USDC_DECIMALS;
         require(bearsToMint > 0, "No bears to redeem");
 
-        // Mint Teddy Bears
         for (uint256 i = 0; i < bearsToMint; i++) {
             _mintTeddy(_msgSender());
         }
@@ -350,32 +345,21 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
         emit BearsDistributed(assetID, roundID);
     }
 
-    /**
-    * @notice Withdraws a specified amount of an ERC20 token to the DAO treasury. For tokens accidentally sent or stuck.
-    * @param token The address of the ERC20 token to withdraw.
-    * @param amount The amount of tokens to withdraw.
-    */
     function withdrawTokens(address token, uint256 amount) external onlyMaintainer nonReentrant {
         require(token != address(usdc), "Cannot withdraw USDC using this function");
         IERC20(token).safeTransfer(daoTreasury, amount);
         emit TokensWithdrawn(token, amount);
     }
 
-
     function sellTeddyBear(uint256 teddyId) external nonReentrant {
         require(_teddyOwner[teddyId] == _msgSender(), "Not owner");
 
-        // Burn Teddy Bear
         _teddyOwner[teddyId] = address(0);
         _teddyBalance[_msgSender()] -= 1;
 
-        // Calculate payout
-        // Base price: 10 USDC
-        // Fee: teddyBearFeeBps
         uint256 fee = (TEDDY_BEAR_BASE_PRICE * teddyBearFeeBps) / 10000;
         uint256 payout = TEDDY_BEAR_BASE_PRICE - fee;
 
-        // Transfer fee to DAO, payout to user
         if (fee > 0) {
             usdc.safeTransfer(daoTreasury, fee);
         }
@@ -387,9 +371,7 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     // -----------------------
     // Views and Helpers
     // -----------------------
-
     function getPriceFromOracle(address oracle, address asset) internal view returns (uint256) {
-        // Expecting oracle to return price in USDC (6 decimals)
         require(oracle != address(0), "No oracle");
         return IPriceOracle(oracle).getPrice(asset);
     }
@@ -411,12 +393,10 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        // ERC165 Interface
         // ERC721 Interface ID: 0x80ac58cd
         return interfaceId == type(IERC721).interfaceId || super.supportsInterface(interfaceId);
     }
 
-    // ERC721-like functions for Teddy Bears
     function balanceOf(address owner) public view returns (uint256) {
         return _teddyBalance[owner];
     }
@@ -434,7 +414,7 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
         emit TeddyBearMinted(to, _nextTeddyId);
     }
 
-    // Dummy functions for ERC721 compatibility - no external transfers except selling back
+    // ERC721 dummy functions
     function safeTransferFrom(address, address, uint256) external pure {
         revert("External transfer not allowed");
     }
@@ -468,7 +448,6 @@ contract TeddyBearPrediction is Context, ReentrancyGuard, ERC165 {
     }
 
     function tokenURI(uint256 tokenId) external pure returns (string memory) {
-        // Placeholder URI
         return string(abi.encodePacked("https://example.com/teddy/", Strings.toString(tokenId)));
     }
 }
