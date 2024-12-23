@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Countdown / Prediction UI</title>
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+  <link rel="stylesheet" href="css/main.css" />
+   
+
+
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="left-group">
+    <label for="asset-select">Asset:</label>
+    <select id="asset-select">
+      <option>wBTC (on Uniswap)</option>
+      <option>ETH (on Uniswap)</option>
+    </select>
+    <span>Last Price: $100,030</span>
+    <button class="btn btn-secondary btn-sm ms-2">Add Asset</button>
+  </div>
+  <div class="right-group">
+    <!--<button class="btn btn-secondary btn-sm">Connect Wallet</button>-->
+  </div>
+</div>
+
+<div class="container py-3">
+  <!-- Header and Countdown Box -->
+  <div class="row mb-5">
+    <div class="col-12 text-center">
+      <h3 class="game-title">A Game Of Skill: Predict The Half Hour Price Direction (Up or Down)</h3>
+
+      <!-- Countdown box with minutes/seconds and description -->
+      <div class="countdown-box">
+        <div class="countdown-part">
+          <div id="minutes-val">--</div>
+          <div class="countdown-label">minutes</div>
+        </div>
+        <div class="countdown-divider"></div>
+        <div class="countdown-part">
+          <div id="seconds-val">--</div>
+          <div class="countdown-label">seconds</div>
+        </div>
+        <div class="countdown-divider"></div>
+        <div class="countdown-description">until Price Session Resolution</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Prediction Gauge Section -->
+  <div class="row my-5">
+    <div class="col-12 text-center">
+      <div class="gauge-container">
+        <div class="gauge">
+          <div class="needle"></div>
+        </div>
+        <!-- Left: Down predictions -->
+        <div class="gauge-label-down">
+          <div>25%</div>
+          <div class="small-text">Predict Down</div>
+        </div>
+        <!-- Right: Up predictions -->
+        <div class="gauge-label-up">
+          <div>75%</div>
+          <div class="small-text">Predict Up</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Prediction Buttons and Ticket -->
+  <div class="row mb-5">
+    <div class="col-12 text-center d-flex justify-content-center flex-wrap">
+      <!-- Left: Predict Down Button -->
+      <div class="me-4 text-center">
+        <div>Predict Down</div>
+        <button class="btn btn-danger btn-sm mt-2">Buy Ticket $5</button>
+      </div>
+      <!-- Right: Predict Up Button -->
+      <div class="text-center mt-3 mt-sm-0">
+        <div>Predict Up</div>
+        <button class="btn btn-success btn-sm mt-2">Buy Ticket $5</button>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Teddy Bear Section -->
+  <div class="row mb-5">
+    <div class="col-12 text-center">
+      <h3>Sell Tickets for Teddy Bears</h3>
+      <div class="bear-container mt-3">
+        <img src="images/teddy.png" alt="Teddy Bear" class="img-fluid teddyimg" />
+        <div class="price-tag">$10</div>
+      </div>
+      <div class="mt-3">
+        <button class="btn btn-primary btn-sm">Buy Bear</button>
+        <button class="btn btn-secondary btn-sm">Sell Bear</button>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- History Section -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <h4>24-hour History</h4>
+      <p>In the last 24 hours: Up predictions won: 15 times, Down predictions won: 9 times.</p>
+      <table class="table history-table">
+        <thead>
+          <tr>
+            <th style="width: 30%;">Time</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-up">
+            <td>1:00pm</td>
+            <td>Predict Up won</td>
+          </tr>
+          <tr class="bg-down">
+            <td>12:30pm</td>
+            <td>Predict Down won</td>
+          </tr>
+          <tr class="bg-up">
+            <td>12:00pm</td>
+            <td>Predict Up won</td>
+          </tr>
+          <tr class="bg-down">
+            <td>11:30am</td>
+            <td>Predict Down won</td>
+          </tr>
+          <tr class="bg-up">
+            <td>11:00am</td>
+            <td>Predict Up won</td>
+          </tr>
+          <tr class="bg-up">
+            <td>10:30am</td>
+            <td>Predict Up won</td>
+          </tr>
+          <tr class="bg-down">
+            <td>10:00am</td>
+            <td>Predict Down won</td>
+          </tr>
+          <tr class="bg-up">
+            <td>9:30am</td>
+            <td>Predict Up won</td>
+          </tr>
+          <tr class="bg-down">
+            <td>9:00am</td>
+            <td>Predict Down won</td>
+          </tr>
+          <tr class="bg-up">
+            <td>8:30am</td>
+            <td>Predict Up won</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer Bar -->
+<div class="footer-bar">
+  <div class="left-group">
+    <a href="https://github.com/">GitHub</a>
+  </div>
+  <div></div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+<!-- Then Web3 (the official 1.x branch) -->
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.7.4/dist/web3.min.js"></script>
+
+<!-- Optional: WalletConnect if you are using it -->
+<script src="https://unpkg.com/@walletconnect/web3-provider/dist/umd/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/main.js"></script>
+
+
+</body>
+</html>

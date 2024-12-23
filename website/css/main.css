@@ -1,0 +1,257 @@
+ /* Dark Theme inspired by Atom editor's One Dark theme */
+    body {
+      background: #282c34;
+      color: #abb2bf;
+      font-family: sans-serif;
+    }
+
+    .top-bar, .footer-bar {
+      background: #21252b;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .top-bar .left-group {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .top-bar label,
+    .top-bar span,
+    .footer-bar a {
+      color: #abb2bf;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .top-bar select,
+    .top-bar button,
+    .footer-bar a:hover {
+      color: #abb2bf;
+    }
+
+    .top-bar select,
+    .top-bar button {
+      background: #3c4047;
+      border: 1px solid #5c6370;
+    }
+
+    .footer-bar .left-group {
+      margin-left: 20px; /* Margin for GitHub link */
+    }
+
+    h1, h2, h3, h4 {
+      color: #e5e9f0;
+    }
+
+    h3.game-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Countdown display box */
+    .countdown-box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: center; /* Center all items horizontally */
+      background: #3c4047;
+      border: 1px solid #5c6370;
+      border-radius: 4px;
+      padding: 10px 15px;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .countdown-part {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 0;
+    }
+
+    .countdown-part div {
+      color: #e5e9f0;
+      font-size: 3rem;
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-size: 15px; /* Increased to 15px */
+      color: #e5e9f0;
+      margin-top: 2px;
+    }
+
+    .countdown-divider {
+      border-right: 1px solid #5c6370;
+      height: 40px;
+      margin: 0 5px;
+      align-self: flex-end;
+    }
+
+    .countdown-description {
+      font-size: 0.8rem; /* Slightly larger to be visible on wide screens */
+      color: #e5e9f0;
+      white-space: normal;
+      word-break: break-word;
+      align-self: flex-end;
+      margin-bottom: 3px;
+    }
+
+    /* Gauge styling */
+    .gauge-container {
+      position: relative;
+      width: 200px;
+      height: 100px;
+      margin: 0 auto;
+      overflow: visible;
+      margin-top: 40px;
+    }
+
+    .gauge {
+      position: relative;
+      width: 200px;
+      height: 100px;
+      background: #3c4047;
+      border-radius: 100px 100px 0 0;
+      border: 2px solid #5c6370;
+    }
+
+    .needle {
+      position: absolute;
+      width: 2px;
+      height: 90px;
+      background: #abb2bf;
+      bottom: 0;
+      left: 50%;
+      transform-origin: bottom center;
+      transform: rotate(45deg);
+    }
+
+    /* Move gauge labels further out to left and right */
+    .gauge-label-down,
+    .gauge-label-up {
+      position: absolute;
+      font-weight: bold;
+      text-align: center;
+      width: 100px;
+    }
+
+    .gauge-label-down {
+      color: #e06c75; /* Red */
+      left: 15%; /* Moved out more to the left */
+      top: -40px;
+      transform: translateX(-50%);
+    }
+
+    .gauge-label-up {
+      color: #98c379; /* Green */
+      right: 15%; /* Moved out more to the right */
+      top: -40px;
+      transform: translateX(50%);
+    }
+
+    .gauge-label-down .small-text,
+    .gauge-label-up .small-text {
+      font-size: 0.8rem;
+      font-weight: normal;
+      display: block;
+    }
+
+    /* Buttons */
+    .btn {
+      background: #3c4047;
+      border: 1px solid #5c6370;
+      color: #abb2bf;
+    }
+
+    .btn-success {
+      background: #98c379 !important;
+      border-color: #98c379 !important;
+      color: #282c34 !important;
+    }
+
+    .btn-danger {
+      background: #e06c75 !important;
+      border-color: #e06c75 !important;
+      color: #282c34 !important;
+    }
+
+    .btn-primary {
+      background: #61afef !important;
+      border-color: #61afef !important;
+      color: #282c34 !important;
+    }
+
+    .btn-secondary {
+      background: #5c6370 !important;
+      border-color: #5c6370 !important;
+      color: #abb2bf !important;
+    }
+
+    /* Teddy bear price tag */
+    .bear-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .price-tag {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e5c07b;
+      color: #282c34;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* History table styling */
+    .table {
+      background-color: transparent !important;
+    }
+
+    .table th,
+    .table td {
+      color: #ffffff !important; /* Table text now white */
+    }
+
+    .table th {
+      background-color: #21252b !important;
+      border-bottom: 1px solid #3c4047;
+    }
+
+    .table td {
+      padding: 4px;
+      border-top: 1px solid #3c4047;
+      background-color: transparent;
+    }
+
+    /* Adjusted colors for table rows */
+    .bg-up {
+      background-color: #4e8344 !important; /* New green shade */
+      color: #ffffff !important;
+    }
+
+    .bg-down {
+      background-color: #ce4040 !important; /* New red shade */
+      color: #ffffff !important;
+    }
+
+    /* Section dividers */
+    hr {
+      border-color: #5c6370;
+      margin: 2em 0;
+    }
+
+.teddyimg{
+    height:200px;
+}
