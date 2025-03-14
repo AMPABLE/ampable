@@ -364,3 +364,72 @@ hr {
 .pending-dots span:nth-child(3) {
     animation-delay: 0.6s;
 }
+
+/* Status indicators in footer */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-connected {
+    background-color: #50fa7b; /* Green */
+    box-shadow: 0 0 5px #50fa7b;
+}
+
+.status-disconnected {
+    background-color: #ff5555; /* Red */
+}
+
+/* Network indicators */
+.network-ethereum {
+    color: #62688F;
+    font-weight: bold;
+}
+
+.network-optimism {
+    color: #ff0420;
+    font-weight: bold;
+}
+
+.network-polygon {
+    color: #8247e5;
+    font-weight: bold;
+}
+
+.network-arbitrum {
+    color: #28a0f0;
+    font-weight: bold;
+}
+
+.network-avalanche {
+    color: #e84142;
+    font-weight: bold;
+}
+
+.network-bsc {
+    color: #f3ba2f;
+    font-weight: bold;
+}
+
+.network-testnet {
+    color: #ff8c00;
+    font-weight: bold;
+}
+
+.network-unknown {
+    color: #abb2bf;
+    font-style: italic;
+}
+
+#disconnect-link {
+    color: #ff5555;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#disconnect-link:hover {
+    text-decoration: underline;
+}
