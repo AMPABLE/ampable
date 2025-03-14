@@ -433,3 +433,135 @@ hr {
 #disconnect-link:hover {
     text-decoration: underline;
 }
+
+/* Create Asset Lightbox */
+.asset-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.asset-lightbox.hidden {
+    display: none;
+}
+
+.asset-lightbox-content {
+    background: #282c34;
+    width: 80%;
+    height: 80%;
+    border-radius: 8px;
+    padding: 25px;
+    position: relative;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid #5c6370;
+}
+
+.close-lightbox {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #e06c75;
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close-lightbox:hover {
+    background: rgba(224, 108, 117, 0.2);
+}
+
+#create-asset-form .form-group {
+    margin-bottom: 20px;
+}
+
+#create-asset-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #abb2bf;
+    font-weight: bold;
+}
+
+#create-asset-form .form-control {
+    width: 100%;
+    padding: 10px;
+    background: #3c4047;
+    border: 1px solid #5c6370;
+    border-radius: 4px;
+    color: #abb2bf;
+    font-size: 16px;
+}
+
+#create-asset-form .form-control:focus {
+    outline: none;
+    border-color: #61afef;
+    box-shadow: 0 0 0 2px rgba(97, 175, 239, 0.25);
+}
+
+#create-asset-form textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+#create-asset-form select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23abb2bf' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    padding-right: 30px;
+}
+
+#create-asset-form .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    justify-content: flex-end;
+}
+
+#create-asset-form .btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Form validation styles */
+#create-asset-form input:invalid,
+#create-asset-form textarea:invalid,
+#create-asset-form select:invalid {
+    border-color: #e06c75;
+}
+
+#create-asset-form input:focus:invalid,
+#create-asset-form textarea:focus:invalid,
+#create-asset-form select:focus:invalid {
+    box-shadow: 0 0 0 2px rgba(224, 108, 117, 0.25);
+}
+
+/* Custom Create Asset button in top bar */
+#create-asset-btn {
+    background: #98c379;
+    color: #282c34;
+    border: none;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+#create-asset-btn:hover {
+    background: #a6d189;
+}

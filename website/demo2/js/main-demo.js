@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const establishedDatalist = document.getElementById("established-tokens");
   const userInput = document.getElementById("user-input");
   const userTokenDropdown = document.getElementById("user-token-dropdown");
-  const addAssetBtn = document.getElementById("add-asset-btn");
+  const createAssetBtn = document.getElementById("create-asset-btn");
   const footerInfo = document.getElementById("footer-info");
   const howItWorksText = document.getElementById("how-it-works-text");
   const howOverlay = document.getElementById("how-it-works-overlay");
@@ -59,6 +59,9 @@ document.addEventListener("DOMContentLoaded", function () {
     "Vintage Comic Collection",
     "New Development in Dubai",
   ];
+  
+  // Store user-created assets with full details
+  const createdAssets = [];
 
   // ----------------------------
   // UTILITY FUNCTIONS
@@ -706,224 +709,113 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ----------------------------
-  // ADD ASSET FLOW (Two-Step Modal)
+  // CREATE ASSET LIGHTBOX
   // ----------------------------
-  addAssetBtn.addEventListener("click", showAddAssetModal);
-
-  function showAddAssetModal() {
-    Swal.fire({
-      title: "Add Asset",
-      html: `
-        <p>Is this an Existing Token or a New Token?</p>
-        <label><input type="radio" name="asset-add-kind" value="existing" checked> Existing Token</label>
-        <label><input type="radio" name="asset-add-kind" value="new"> New Token</label>
-      `,
-      showCancelButton: true,
-      confirmButtonText: "Next",
-      preConfirm: () => {
-        const kind = Swal.getPopup().querySelector(
-          'input[name="asset-add-kind"]:checked',
-        ).value;
-        return kind;
-      },
-    }).then((result) => {
-      if (result.value) {
-        const kind = result.value;
-        let tokenAddressField = "";
-        if (kind === "existing") {
-          tokenAddressField = `<tr>
-              <td><label for="asset-address">Token Address:</label></td>
-              <td><input type="text" id="asset-address" class="swal2-input" placeholder="Token Address"></td>
-            </tr>`;
-        }
-        Swal.fire({
-          title: "Asset Details",
-          html: `
-            <table style="width:100%; text-align:left; font-size:0.8rem;">
-              <tr>
-                <td><label for="asset-name">Asset Name:</label></td>
-                <td><input type="text" id="asset-name" class="swal2-input" placeholder="Asset Name"></td>
-              </tr>
-              ${tokenAddressField}
-              <tr>
-                <td><label for="asset-symbol">Symbol:</label></td>
-                <td><input type="text" id="asset-symbol" class="swal2-input" placeholder="e.g. BTC"></td>
-              </tr>
-              <tr>
-                <td><label for="asset-decimals">Decimals:</label></td>
-                <td><input type="number" id="asset-decimals" class="swal2-input" placeholder="18 (recommended)"></td>
-              </tr>
-              <tr>
-                <td><label for="asset-supply">Total Supply:</label></td>
-                <td><input type="number" id="asset-supply" class="swal2-input" placeholder="Total Supply"></td>
-              </tr>
-              <tr>
-                <td><label for="asset-description">Description:</label></td>
-                <td><textarea id="asset-description" class="swal2-textarea" placeholder="Brief asset description"></textarea></td>
-              </tr>
-              <tr>
-                <td><label for="asset-category">Category:</label></td>
-                <td>
-                  <select id="asset-category" class="swal2-input">
-                    <option value="Real Estate Token">Real Estate Token</option>
-                    <option value="Security Token">Security Token</option>
-                    <option value="Gaming Token">Gaming Token</option>
-                    <option value="Digital Asset">Normal Digital Asset</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <td><label for="discord-url">Discord Invite URL:</label></td>
-                <td><input type="url" id="discord-url" class="swal2-input" placeholder="Discord Invite URL"></td>
-              </tr>
-              <tr>
-                <td><label for="other-comm-url">Other Communication URL:</label></td>
-                <td><input type="url" id="other-comm-url" class="swal2-input" placeholder="Other Communication URL"></td>
-              </tr>
-              <tr>
-                <td><label for="entity-name">Entity Name:</label></td>
-                <td><input type="text" id="entity-name" class="swal2-input" placeholder="Requested Entity Name"></td>
-              </tr>
-              <tr>
-                <td><label for="entity-address">Entity Address:</label></td>
-                <td><input type="text" id="entity-address" class="swal2-input" placeholder="Entity Physical Address"></td>
-              </tr>
-              <tr>
-                <td><label for="contact-phone">Contact Phone:</label></td>
-                <td><input type="tel" id="contact-phone" class="swal2-input" placeholder="Contact Phone"></td>
-              </tr>
-              <tr>
-                <td><label for="contact-email">Contact Email:</label></td>
-                <td><input type="email" id="contact-email" class="swal2-input" placeholder="Contact Email"></td>
-              </tr>
-              <tr>
-                <td><label for="regulatory-link">Regulatory Info Link (optional):</label></td>
-                <td><input type="url" id="regulatory-link" class="swal2-input" placeholder="Regulatory Information URL"></td>
-              </tr>
-              <tr>
-                <td><label for="price-oracle">Price Oracle URL:</label></td>
-                <td><input type="url" id="price-oracle" class="swal2-input" placeholder="Oracle URL"></td>
-              </tr>
-              <tr>
-                <td><label for="asset-interval">Default Round Interval (minutes):</label></td>
-                <td><input type="number" id="asset-interval" class="swal2-input" placeholder="e.g. 30"></td>
-              </tr>
-            </table>
-          `,
-          showCancelButton: true,
-          confirmButtonText: "Add Asset",
-          preConfirm: () => {
-            const name = document.getElementById("asset-name").value.trim();
-            const symbol = document.getElementById("asset-symbol").value.trim();
-            const decimals = document
-              .getElementById("asset-decimals")
-              .value.trim();
-            const supply = document.getElementById("asset-supply").value.trim();
-            const description = document
-              .getElementById("asset-description")
-              .value.trim();
-            const category = document.getElementById("asset-category").value;
-            const discord = document.getElementById("discord-url").value.trim();
-            const otherComm = document
-              .getElementById("other-comm-url")
-              .value.trim();
-            const entityName = document
-              .getElementById("entity-name")
-              .value.trim();
-            const entityAddress = document
-              .getElementById("entity-address")
-              .value.trim();
-            const contactPhone = document
-              .getElementById("contact-phone")
-              .value.trim();
-            const contactEmail = document
-              .getElementById("contact-email")
-              .value.trim();
-            const regulatoryLink = document
-              .getElementById("regulatory-link")
-              .value.trim();
-            const oracle = document.getElementById("price-oracle").value.trim();
-            const interval = document
-              .getElementById("asset-interval")
-              .value.trim();
-            let tokenAddress = "";
-            if (kind === "existing") {
-              tokenAddress = document
-                .getElementById("asset-address")
-                .value.trim();
-              if (!tokenAddress) {
-                Swal.showValidationMessage("Please enter the Token Address");
-                return false;
-              }
-            }
-            if (
-              !name ||
-              !symbol ||
-              !decimals ||
-              !supply ||
-              !description ||
-              !category ||
-              !discord ||
-              !otherComm ||
-              !entityName ||
-              !entityAddress ||
-              !contactPhone ||
-              !contactEmail ||
-              !oracle ||
-              !interval
-            ) {
-              Swal.showValidationMessage("Please fill out all required fields");
-              return false;
-            }
-            return {
-              name,
-              symbol,
-              decimals,
-              supply,
-              description,
-              category,
-              discord,
-              otherComm,
-              entityName,
-              entityAddress,
-              contactPhone,
-              contactEmail,
-              regulatoryLink,
-              oracle,
-              interval,
-              tokenAddress,
-              kind,
-            };
-          },
-        }).then((result) => {
-          if (result.value) {
-            Swal.fire({
-              title: "Processing Asset Addition",
-              html: '<p class="pending-dots"><span>.</span><span>.</span><span>.</span></p>',
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              },
-            });
-            setTimeout(() => {
-              const assetLink =
-                "https://ampable.akashnetwork.io/token/0x" +
-                Math.floor(Math.random() * 1e16).toString(16);
-              Swal.fire(
-                "Success",
-                `Asset added! View at: <a href="${assetLink}" target="_blank">${assetLink}</a>`,
-                "success",
-              );
-              userTokens.push(result.value.name);
-              // Refresh the custom dropdown by clearing it.
-              userTokenDropdown.innerHTML = "";
-            }, 3000);
-          }
-        });
-      }
-    });
+  const createAssetLightbox = document.getElementById("create-asset-lightbox");
+  const closeAssetLightboxBtn = document.getElementById("close-asset-lightbox");
+  const cancelAssetCreationBtn = document.getElementById("cancel-asset-creation");
+  const createAssetForm = document.getElementById("create-asset-form");
+  
+  // Open lightbox when Create Asset button is clicked
+  createAssetBtn.addEventListener("click", function() {
+    if (!isConnected) {
+      Swal.fire(
+        "Not Connected",
+        "Please connect your wallet first to create assets.",
+        "warning"
+      );
+      return;
+    }
+    createAssetLightbox.classList.remove("hidden");
+    document.body.style.overflow = "hidden"; // Prevent scrolling behind lightbox
+  });
+  
+  // Close lightbox functions
+  function closeAssetLightbox() {
+    createAssetLightbox.classList.add("hidden");
+    document.body.style.overflow = ""; // Re-enable scrolling
+    createAssetForm.reset(); // Reset form fields
   }
+  
+  closeAssetLightboxBtn.addEventListener("click", closeAssetLightbox);
+  cancelAssetCreationBtn.addEventListener("click", closeAssetLightbox);
+  
+  // Handle form submission
+  createAssetForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const assetName = document.getElementById("asset-name").value.trim();
+    const tokenAddress = document.getElementById("token-address").value.trim();
+    const communicationLink = document.getElementById("communication-link").value.trim();
+    const priceOracleUrl = document.getElementById("price-oracle-url").value.trim();
+    const roundInterval = document.getElementById("round-interval").value;
+    const regulatoryDisclosure = document.getElementById("regulatory-disclosure").value.trim();
+    
+    // Validate URL fields
+    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    
+    let hasErrors = false;
+    let errorMessage = "";
+    
+    if (!urlPattern.test(communicationLink)) {
+      hasErrors = true;
+      errorMessage += "• Communication Link must be a valid URL\n";
+    }
+    
+    if (!urlPattern.test(priceOracleUrl)) {
+      hasErrors = true;
+      errorMessage += "• Price Oracle URL must be a valid URL\n";
+    }
+    
+    if (hasErrors) {
+      Swal.fire({
+        title: "Validation Error",
+        html: `<div style="text-align: left; color: #e06c75;">${errorMessage.replace(/\n/g, '<br>')}</div>`,
+        icon: "error"
+      });
+      return;
+    }
+    
+    // Create asset object
+    const newAsset = {
+      id: createdAssets.length + 1,
+      name: assetName,
+      tokenAddress: tokenAddress,
+      communicationLink: communicationLink,
+      priceOracleUrl: priceOracleUrl,
+      roundInterval: parseInt(roundInterval),
+      regulatoryDisclosure: regulatoryDisclosure,
+      dateCreated: new Date().toISOString(),
+      createdBy: selectedAccount
+    };
+    
+    // Add to created assets array
+    createdAssets.push(newAsset);
+    
+    // Add to user tokens for display in dropdown
+    if (!userTokens.includes(assetName)) {
+      userTokens.push(assetName);
+    }
+    
+    // Show success message
+    Swal.fire({
+      title: "Asset Created!",
+      html: `
+        <p>Your asset "${assetName}" has been created successfully.</p>
+        <p>Token Address: ${tokenAddress.substring(0, 8)}...${tokenAddress.substring(tokenAddress.length - 6)}</p>
+        <p>You can now find it in the User Generated Tokens list.</p>
+      `,
+      icon: "success"
+    });
+    
+    // Close lightbox and reset form
+    closeAssetLightbox();
+    
+    // Log to console for debugging
+    console.log("New asset created:", newAsset);
+    console.log("Current created assets:", createdAssets);
+  });
 
   // ----------------------------
   // INITIALIZATION

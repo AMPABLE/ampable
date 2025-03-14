@@ -38,8 +38,8 @@
                 />
                 <ul id="user-token-dropdown" class="custom-dropdown"></ul>
                 <span id="live-price">Last Price: $100,030</span>
-                <button class="btn btn-secondary btn-sm" id="add-asset-btn">
-                    Add Asset
+                <button class="btn btn-secondary btn-sm" id="create-asset-btn">
+                    Create Asset
                 </button>
             </div>
             <div class="right-group">
@@ -67,7 +67,7 @@
                     <h3>Sell Tickets for Teddy Bears</h3>
                     <div class="bear-container mt-3">
                         <img
-                            src="images/teddy.png"
+                            src="../images/teddy.png"
                             alt="Teddy Bear"
                             class="img-fluid teddyimg"
                         />
@@ -239,6 +239,63 @@
         <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
         <!-- Ethereum Provider Detection -->
         <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
+
+        <!-- Create Asset Lightbox -->
+        <div id="create-asset-lightbox" class="asset-lightbox hidden">
+            <div class="asset-lightbox-content">
+                <button class="close-lightbox" id="close-asset-lightbox">×</button>
+                <h2>Create New Asset</h2>
+                <form id="create-asset-form">
+                    <div class="form-group">
+                        <label for="asset-name">Asset Name *</label>
+                        <input type="text" id="asset-name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="token-address">Token Address *</label>
+                        <input type="text" id="token-address" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="communication-link">Communication Link *</label>
+                        <input type="url" id="communication-link" class="form-control" 
+                               placeholder="https://discord.com/..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="price-oracle-url">Price Oracle URL *</label>
+                        <input type="url" id="price-oracle-url" class="form-control" 
+                               placeholder="https://api.example.com/prices" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="round-interval">Round Interval *</label>
+                        <select id="round-interval" class="form-control" required>
+                            <option value="">Select interval...</option>
+                            <option value="30">30 minutes</option>
+                            <option value="60">1 hour</option>
+                            <option value="720">12 hours</option>
+                            <option value="1440">1 day</option>
+                            <option value="10080">1 week</option>
+                            <option value="43200">1 month</option>
+                            <option value="525600">1 year</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regulatory-disclosure">Regulatory Disclosure *</label>
+                        <textarea id="regulatory-disclosure" class="form-control" rows="6" required
+                                 placeholder="Enter regulatory information about this asset..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Create Asset</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-asset-creation">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
         <!-- Our main JavaScript with cache busting -->
         <script src="js/main-demo.js?v=5.1"></script>
     </body>
