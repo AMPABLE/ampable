@@ -1,0 +1,366 @@
+/* Dark Theme inspired by Atom One Dark */
+
+/* Body & General */
+body {
+    background: #282c34;
+    color: #abb2bf;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+/* Top Bar & Footer */
+.top-bar,
+.footer-bar {
+    background: #21252b;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.top-bar .left-group,
+.footer-bar .left-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.top-bar label,
+.top-bar span,
+.footer-bar a {
+    color: #abb2bf;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.top-bar input,
+.top-bar button {
+    background: #3c4047;
+    border: 1px solid #5c6370;
+    color: #abb2bf;
+    padding: 4px;
+}
+
+/* "How It Works" Text with Circle Icon */
+#how-it-works-text {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+.circle-icon {
+    background: #fff;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #5c6370;
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+/* Container */
+.container {
+    padding: 20px;
+}
+
+/* Asset Preview Area */
+#asset-preview-area {
+    margin-bottom: 20px;
+}
+
+/* Asset Preview Card */
+#asset-preview-area .card {
+    background: #3c4047;
+    border: 1px solid #5c6370;
+    color: #e5e9f0;
+}
+
+/* Countdown Box (in asset preview) */
+.countdown-box {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: #3c4047;
+    border: 1px solid #5c6370;
+    border-radius: 4px;
+    padding: 10px 15px;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.countdown-part {
+    text-align: center;
+}
+
+.countdown-part div {
+    color: #e5e9f0;
+    font-size: 2.5rem;
+}
+
+.countdown-label {
+    font-size: 14px;
+    color: #e5e9f0;
+    margin-top: 2px;
+}
+
+.countdown-divider {
+    border-right: 1px solid #5c6370;
+    height: 40px;
+    margin: 0 5px;
+}
+
+/* Gauge Styling */
+.gauge-container {
+    position: relative;
+    width: 200px;
+    height: 100px;
+    margin: 20px auto;
+    overflow: visible;
+}
+
+.gauge {
+    position: relative;
+    width: 200px;
+    height: 100px;
+    background: #3c4047;
+    border: 2px solid #5c6370;
+    border-radius: 100px 100px 0 0;
+}
+
+.needle {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    height: 90px;
+    background: #abb2bf;
+    transform-origin: bottom center;
+    transform: rotate(45deg);
+}
+
+.gauge-label-down,
+.gauge-label-up {
+    position: absolute;
+    font-weight: bold;
+    text-align: center;
+    width: 100px;
+    top: -40px;
+}
+
+.gauge-label-down {
+    color: #e06c75;
+    left: 15%;
+    transform: translateX(-50%);
+}
+
+.gauge-label-up {
+    color: #98c379;
+    right: 15%;
+    transform: translateX(50%);
+}
+
+.gauge-label-down .small-text,
+.gauge-label-up .small-text {
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+/* Buttons */
+.btn {
+    background: #3c4047;
+    border: 1px solid #5c6370;
+    color: #abb2bf;
+}
+
+.btn-success {
+    background: #98c379 !important;
+    border-color: #98c379 !important;
+    color: #282c34 !important;
+}
+
+.btn-danger {
+    background: #e06c75 !important;
+    border-color: #e06c75 !important;
+    color: #282c34 !important;
+}
+
+.btn-primary {
+    background: #61afef !important;
+    border-color: #61afef !important;
+    color: #282c34 !important;
+}
+
+.btn-secondary {
+    background: #5c6370 !important;
+    border-color: #5c6370 !important;
+    color: #abb2bf !important;
+}
+
+/* Teddy Bear Section */
+.bear-container {
+    position: relative;
+    display: inline-block;
+}
+
+.price-tag {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #e5c07b;
+    color: #282c34;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.teddyimg {
+    height: 200px;
+}
+
+/* History Table */
+.table {
+    background-color: transparent !important;
+}
+
+.table th,
+.table td {
+    color: #ffffff !important;
+}
+
+.table th {
+    background-color: #21252b !important;
+    border-bottom: 1px solid #3c4047;
+}
+
+.table td {
+    padding: 4px;
+    border-top: 1px solid #3c6370;
+    background-color: transparent;
+}
+
+.bg-up {
+    background-color: #4e8344 !important;
+    color: #ffffff !important;
+}
+
+.bg-down {
+    background-color: #ce4040 !important;
+    color: #ffffff !important;
+}
+
+/* HR Divider */
+hr {
+    border-color: #5c6370;
+    margin: 2em 0;
+}
+
+/* Custom Portfolio Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.portfolio-modal {
+    background: #3c4047;
+    width: 90%;
+    height: 90%;
+    padding: 20px;
+    overflow-y: auto;
+    position: relative;
+    border-radius: 8px;
+}
+
+.close-portfolio {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ce4040;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Custom "How This Works" Overlay */
+.how-modal {
+    background: #3c4047;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+    color: #e5e9f0;
+}
+.close-how {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ce4040;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Custom Dropdown for User-Generated Tokens */
+.custom-dropdown {
+    background: #3c4047;
+    border: 1px solid #5c6370;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: none;
+    position: absolute;
+    z-index: 500;
+}
+.custom-dropdown li {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.custom-dropdown li:hover {
+    background: #5c6370;
+}
+
+/* Pending Overlay Dots */
+.pending-dots span {
+    animation: dotAnimation 1s infinite;
+}
+@keyframes dotAnimation {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+.pending-dots span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+.pending-dots span:nth-child(3) {
+    animation-delay: 0.6s;
+}
