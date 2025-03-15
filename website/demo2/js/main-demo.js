@@ -1,6 +1,27 @@
 // MAIN-DEMO.JS – Plain JavaScript Simulation
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Create and show loading overlay
+  const loadingOverlay = document.createElement("div");
+  loadingOverlay.className = "loading-overlay";
+  loadingOverlay.innerHTML = `
+    <div class="spinner"></div>
+    <div class="loading-message">Initializing application...</div>
+    <div class="loading-status">
+      <div class="loading-status-bar" id="loading-progress"></div>
+    </div>
+  `;
+  document.body.appendChild(loadingOverlay);
+  
+  const loadingProgress = document.getElementById("loading-progress");
+  const loadingMessage = loadingOverlay.querySelector(".loading-message");
+  
+  // Update loading progress
+  function updateLoadingProgress(percent, message) {
+    if (loadingProgress) loadingProgress.style.width = percent + "%";
+    if (loadingMessage) loadingMessage.textContent = message;
+  }
+  
   // ----------------------------
   // GLOBAL STATE
   // ----------------------------
@@ -8,12 +29,29 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedAccount = null;
   let currentAsset = null; // currently previewed asset
   let assetPreviewIntervalID = null; // for countdown
+  let userDisconnected = false; // Flag to track user-initiated disconnections
   
   // Web3 related variables
   let web3 = null;
   let provider = null;
   let chainId = null;
   const CONTRACT_ADDRESS = "0xb8D1Ad0F6db11BD389120E969b36C0d93BFb84b5"; // Update with actual contract address
+  
+  // Flag to track if Web3 libraries are loaded
+  let web3LibrariesLoaded = false;
+  
+  // Network configuration
+  const REQUIRED_NETWORK = {
+    chainId: "0xa", // Optimism chainId in hex (10 in decimal)
+    chainName: "Optimism",
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18
+    },
+    rpcUrls: ["https://mainnet.optimism.io"],
+    blockExplorerUrls: ["https://optimistic.etherscan.io"]
+  };
   
   // Global history data
   const historyData = [
@@ -87,45 +125,46 @@ document.addEventListener("DOMContentLoaded", function () {
       // Get network name based on chainId
       let networkName = "Unknown Network";
       let networkClass = "network-unknown";
+      let networkStatus = "";
       
       if (chainId) {
         const chainIdDec = parseInt(chainId, 16);
         switch (chainIdDec) {
           case 1:
             networkName = "Ethereum Mainnet";
-            networkClass = "network-ethereum";
+            networkClass = "network-ethereum network-wrong";
             break;
           case 10:
             networkName = "Optimism";
-            networkClass = "network-optimism";
+            networkClass = "network-optimism network-correct";
             break;
           case 56:
             networkName = "BSC";
-            networkClass = "network-bsc";
+            networkClass = "network-bsc network-wrong";
             break;
           case 137:
             networkName = "Polygon";
-            networkClass = "network-polygon";
+            networkClass = "network-polygon network-wrong";
             break;
           case 42161:
             networkName = "Arbitrum One";
-            networkClass = "network-arbitrum";
+            networkClass = "network-arbitrum network-wrong";
             break;
           case 43114:
             networkName = "Avalanche C-Chain";
-            networkClass = "network-avalanche";
+            networkClass = "network-avalanche network-wrong";
             break;
           case 5:
             networkName = "Goerli Testnet";
-            networkClass = "network-testnet";
+            networkClass = "network-testnet network-wrong";
             break;
           case 11155111:
             networkName = "Sepolia Testnet";
-            networkClass = "network-testnet";
+            networkClass = "network-testnet network-wrong";
             break;
           default:
             networkName = `Chain ID: ${chainIdDec}`;
-            networkClass = "network-unknown";
+            networkClass = "network-unknown network-wrong";
         }
       }
       
@@ -149,6 +188,32 @@ document.addEventListener("DOMContentLoaded", function () {
   // WALLET CONNECTION FLOW
   // ----------------------------
   async function showWalletOptions() {
+    // Check if libraries are loaded first
+    if (!web3LibrariesLoaded) {
+      Swal.fire({
+        title: "Loading Web3...",
+        html: '<p class="pending-dots"><span>.</span><span>.</span><span>.</span></p><p>Please wait while we initialize wallet connections...</p>',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      
+      try {
+        // Load the web3 and provider libraries dynamically
+        await loadWeb3Libraries();
+        Swal.close();
+      } catch (error) {
+        console.error("Failed to load Web3 libraries:", error);
+        Swal.fire({
+          title: "Error",
+          text: "Failed to load wallet connection libraries. Please try again.",
+          icon: "error"
+        });
+        return;
+      }
+    }
+    
     Swal.fire({
       title: "Connect Wallet",
       html: `
@@ -181,6 +246,44 @@ document.addEventListener("DOMContentLoaded", function () {
       },
     });
   }
+  
+  // Load Web3 libraries dynamically
+  function loadWeb3Libraries() {
+    return new Promise((resolve, reject) => {
+      // Skip if already loaded
+      if (web3LibrariesLoaded) {
+        resolve();
+        return;
+      }
+      
+      // Check if Web3 is already available
+      if (typeof Web3 !== 'undefined' && typeof detectEthereumProvider !== 'undefined') {
+        web3LibrariesLoaded = true;
+        resolve();
+        return;
+      }
+      
+      // If not loaded, dynamically load the scripts
+      const web3Script = document.createElement('script');
+      web3Script.src = 'https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js';
+      web3Script.onload = () => {
+        const providerScript = document.createElement('script');
+        providerScript.src = 'https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js';
+        providerScript.onload = () => {
+          web3LibrariesLoaded = true;
+          resolve();
+        };
+        providerScript.onerror = () => {
+          reject(new Error("Failed to load detect-provider script"));
+        };
+        document.head.appendChild(providerScript);
+      };
+      web3Script.onerror = () => {
+        reject(new Error("Failed to load Web3 script"));
+      };
+      document.head.appendChild(web3Script);
+    });
+  }
 
   async function connectMetaMask() {
     try {
@@ -205,6 +308,9 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
+      // Reset the user disconnected flag when explicitly connecting
+      userDisconnected = false;
+      
       // Request account access
       const accounts = await provider.request({ method: 'eth_requestAccounts' });
       
@@ -240,6 +346,9 @@ document.addEventListener("DOMContentLoaded", function () {
       // Set up event listeners for MetaMask events
       setupMetaMaskListeners();
       
+      // Check if the user is on the correct network
+      checkNetwork();
+      
     } catch (error) {
       console.error("Error connecting to MetaMask:", error);
       Swal.fire(
@@ -251,53 +360,119 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function setupMetaMaskListeners() {
-    // Handle account changes
-    provider.on('accountsChanged', (accounts) => {
-      if (accounts.length === 0) {
-        // User disconnected their wallet
-        disconnectWallet();
-      } else {
-        // User switched accounts
-        selectedAccount = accounts[0];
-        updateFooterInfo();
-        Swal.fire({
-          title: "Account Changed",
-          text: `Account switched to ${selectedAccount.slice(0, 6)}...${selectedAccount.slice(-4)}`,
-          icon: "info",
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000
-        });
-      }
-    });
-
-    // Handle chain changes
-    provider.on('chainChanged', (newChainId) => {
-      chainId = newChainId;
+    // Remove any existing listeners first
+    if (provider) {
+      provider.removeListener('accountsChanged', handleAccountsChanged);
+      provider.removeListener('chainChanged', handleChainChanged);
+      provider.removeListener('disconnect', handleDisconnect);
+    }
+    
+    // Add new listeners with named functions so they can be removed later
+    provider.on('accountsChanged', handleAccountsChanged);
+    provider.on('chainChanged', handleChainChanged);
+    provider.on('disconnect', handleDisconnect);
+  }
+  
+  // Handler functions for MetaMask events
+  function handleAccountsChanged(accounts) {
+    // If disconnected by user, don't auto-reconnect
+    if (userDisconnected) return;
+    
+    if (accounts.length === 0) {
+      // User disconnected their wallet from MetaMask
+      disconnectWallet();
+    } else {
+      // User switched accounts
+      selectedAccount = accounts[0];
+      isConnected = true;
       updateFooterInfo();
       Swal.fire({
-        title: "Network Changed",
-        text: `Network switched to chain ID: ${parseInt(newChainId, 16)}`,
+        title: "Account Changed",
+        text: `Account switched to ${selectedAccount.slice(0, 6)}...${selectedAccount.slice(-4)}`,
         icon: "info",
         toast: true,
         position: "top-end",
         showConfirmButton: false,
         timer: 3000
       });
-      // Reload the page for safety
-      window.location.reload();
-    });
+    }
+  }
+  
+  function handleChainChanged(newChainId) {
+    chainId = newChainId;
+    
+    // If user disconnected, don't auto-reconnect
+    if (!userDisconnected) {
+      checkConnectionStatus();
+    }
+    
+    updateFooterInfo();
+    
+    // Check if switched to correct network
+    if (newChainId === REQUIRED_NETWORK.chainId) {
+      // User switched to Optimism
+      Swal.fire({
+        title: "Optimism Network Detected",
+        text: "You now have full access to all features",
+        icon: "success",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000
+      });
+    } else if (isConnected) {
+      // Only show network warning if actually connected
+      checkNetwork();
+    }
+    
+    // Don't reload the page - this is disruptive
+    // Instead, ensure the UI reflects the current chain
+    updateFooterInfo();
+  }
+  
+  function handleDisconnect(error) {
+    disconnectWallet();
+  }
 
-    // Handle disconnect
-    provider.on('disconnect', (error) => {
-      disconnectWallet();
-    });
+  // Function to check and restore wallet connection
+  async function checkConnectionStatus() {
+    // Don't check connection if explicitly disconnected by user
+    if (userDisconnected) {
+      return;
+    }
+    
+    try {
+      // Check if we're still connected
+      const accounts = await provider.request({ method: 'eth_accounts' });
+      
+      if (accounts && accounts.length > 0) {
+        isConnected = true;
+        selectedAccount = accounts[0];
+      } else {
+        isConnected = false;
+        selectedAccount = null;
+      }
+      
+      updateFooterInfo();
+    } catch (error) {
+      console.error("Error checking connection status:", error);
+      isConnected = false;
+      updateFooterInfo();
+    }
   }
 
   function disconnectWallet() {
     isConnected = false;
     selectedAccount = null;
+    userDisconnected = true; // Set flag to indicate user-initiated disconnect
+    
+    // Remove event listeners if provider exists
+    if (provider) {
+      provider.removeListener('accountsChanged', handleAccountsChanged);
+      provider.removeListener('chainChanged', handleChainChanged);
+      provider.removeListener('disconnect', handleDisconnect);
+    }
+    
     web3 = null;
     walletToggleBtn.textContent = "Connect Wallet";
     updateFooterInfo();
@@ -528,6 +703,17 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       return;
     }
+    
+    // Check if on correct network
+    if (!isCorrectNetwork()) {
+      Swal.fire({
+        title: "Wrong Network",
+        html: "You need to be on the <strong>Optimism</strong> network to buy prediction tickets.<br><br>Please switch your network and try again.",
+        icon: "error"
+      });
+      return;
+    }
+    
     Swal.fire({
       title: "Buy Tickets",
       input: "number",
@@ -598,10 +784,21 @@ document.addEventListener("DOMContentLoaded", function () {
       Swal.fire(
         "Not Connected",
         "Please connect your wallet to view your portfolio.",
-        "warning",
+        "warning"
       );
       return;
     }
+    
+    // Check if on correct network
+    if (!isCorrectNetwork()) {
+      Swal.fire({
+        title: "Wrong Network",
+        html: "You need to be on the <strong>Optimism</strong> network to access your portfolio.<br><br>Please switch your network and try again.",
+        icon: "error"
+      });
+      return;
+    }
+    
     const portfolioOverlay = document.getElementById("portfolio-overlay");
     portfolioOverlay.classList.remove("hidden");
     document.getElementById("bitcoin-date").textContent =
@@ -726,6 +923,17 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       return;
     }
+    
+    // Check if on correct network
+    if (!isCorrectNetwork()) {
+      Swal.fire({
+        title: "Wrong Network",
+        html: "You need to be on the <strong>Optimism</strong> network to create assets.<br><br>Please switch your network and try again.",
+        icon: "error"
+      });
+      return;
+    }
+    
     createAssetLightbox.classList.remove("hidden");
     document.body.style.overflow = "hidden"; // Prevent scrolling behind lightbox
   });
@@ -821,40 +1029,248 @@ document.addEventListener("DOMContentLoaded", function () {
   // INITIALIZATION
   // ----------------------------
   function initDemo() {
+    // Stage 1: Basic UI setup
+    updateLoadingProgress(25, "Setting up interface...");
     updateFooterInfo();
-    // Default asset preview: Bitcoin is pre-selected.
-    currentAsset = {
-      assetID: 1,
-      assetName: "Bitcoin",
-      assetType: "Established",
-      interval: 1800,
-      repeating: true,
-      currentRoundID: 1,
-      currentRoundData: {
-        startTime: Math.floor(Date.now() / 1000),
-        endTime: Math.floor(Date.now() / 1000) + Math.floor(0.95 * 1800),
-        initialPrice: 20000,
-        ended: false,
-        upPool: 0,
-        downPool: 0,
-        originalOraclePrice: 20000,
-        currentOraclePrice: 20000,
-      },
-    };
-    currentAsset.acquisitionDate = new Date().toLocaleString();
-    renderAssetPreview();
-    populateHistory();
+    
+    // Stage 2: Load UI components progressively
+    setTimeout(() => {
+      updateLoadingProgress(50, "Loading assets...");
+      
+      // Setup tokens and search
+      populateDatalists();
+      
+      // Initialize asset data
+      currentAsset = {
+        assetID: 1,
+        assetName: "Bitcoin",
+        assetType: "Established",
+        interval: 1800,
+        repeating: true,
+        currentRoundID: 1,
+        currentRoundData: {
+          startTime: Math.floor(Date.now() / 1000),
+          endTime: Math.floor(Date.now() / 1000) + Math.floor(0.95 * 1800),
+          initialPrice: 20000,
+          ended: false,
+          upPool: 0,
+          downPool: 0,
+          originalOraclePrice: 20000,
+          currentOraclePrice: 20000,
+        },
+      };
+      currentAsset.acquisitionDate = new Date().toLocaleString();
+      
+      // Stage 3: Render UI components
+      setTimeout(() => {
+        updateLoadingProgress(75, "Rendering components...");
+        renderAssetPreview();
+        populateHistory();
+        
+        // Stage 4: Setup event listeners
+        setTimeout(() => {
+          updateLoadingProgress(100, "Finalizing setup...");
+          
+          // Set up Network Switch Lightbox listeners
+          setupNetworkListeners();
+          
+          // Setup "How This Works" overlay
+          howItWorksText.addEventListener("click", () => {
+            howOverlay.classList.remove("hidden");
+          });
+          document.getElementById("close-how-btn").addEventListener("click", () => {
+            howOverlay.classList.add("hidden");
+          });
+          
+          // Remove loading overlay with slight delay for smooth transition
+          setTimeout(() => {
+            document.body.removeChild(loadingOverlay);
+          }, 300);
+        }, 100);
+      }, 100);
+    }, 100);
+  }
+  
+  // Setup network listeners separately
+  function setupNetworkListeners() {
+    const switchNetworkBtn = document.getElementById("switch-network-btn");
+    const closeNetworkWarningBtn = document.getElementById("close-network-warning");
+    
+    if (switchNetworkBtn) {
+      switchNetworkBtn.addEventListener("click", switchToOptimism);
+    }
+    
+    if (closeNetworkWarningBtn) {
+      closeNetworkWarningBtn.addEventListener("click", function() {
+        const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
+        networkSwitchLightbox.classList.add("hidden");
+        document.body.style.overflow = "";
+        
+        Swal.fire({
+          title: "Limited Access",
+          text: "Some features will be disabled until you switch to Optimism network",
+          icon: "warning",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 4000
+        });
+      });
+    }
   }
 
   initDemo();
 
-  // ----------------------------
-  // "How This Works" Overlay Handling
-  // ----------------------------
-  howItWorksText.addEventListener("click", () => {
-    howOverlay.classList.remove("hidden");
-  });
-  document.getElementById("close-how-btn").addEventListener("click", () => {
-    howOverlay.classList.add("hidden");
-  });
+  // Network checking function - make it more efficient
+  function checkNetwork() {
+    // If not connected yet, don't show the network warning
+    if (!isConnected || !chainId) {
+      return;
+    }
+    
+    const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
+    const currentNetworkSpan = document.getElementById("current-network-name");
+    
+    if (chainId !== REQUIRED_NETWORK.chainId) {
+      // User is on the wrong network
+      let networkName = "Unknown Network";
+      
+      // Get the network name
+      const chainIdDec = parseInt(chainId, 16);
+      switch (chainIdDec) {
+        case 1:
+          networkName = "Ethereum Mainnet";
+          break;
+        case 56:
+          networkName = "Binance Smart Chain";
+          break;
+        case 137:
+          networkName = "Polygon";
+          break;
+        default:
+          networkName = `Chain ID: ${chainIdDec}`;
+      }
+      
+      // Update the network name in the lightbox
+      if (currentNetworkSpan) {
+        currentNetworkSpan.textContent = networkName;
+      }
+      
+      // Show the network switch lightbox
+      // Delay showing the modal to avoid blocking initial page load
+      setTimeout(() => {
+        if (networkSwitchLightbox) {
+          networkSwitchLightbox.classList.remove("hidden");
+          document.body.style.overflow = "hidden"; // Prevent scrolling
+        }
+      }, 500);
+    }
+  }
+  
+  // Function to switch networks via MetaMask
+  async function switchToOptimism() {
+    try {
+      // First try to switch to the Optimism network
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: REQUIRED_NETWORK.chainId }],
+      });
+      
+      // If successful, close the warning and update UI
+      const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
+      networkSwitchLightbox.classList.add("hidden");
+      document.body.style.overflow = "";
+      
+      // Only reconnect if the user hasn't explicitly disconnected
+      if (!isConnected && !userDisconnected) {
+        // If connection was lost during network switch but user didn't disconnect
+        connectMetaMask();
+      } else if (isConnected) {
+        // Update the UI to show the correct network
+        updateFooterInfo();
+        
+        Swal.fire({
+          title: "Network Switched!",
+          text: "Successfully switched to Optimism network",
+          icon: "success",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000
+        });
+      }
+      
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+        try {
+          // Add the Optimism network to MetaMask
+          await provider.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: REQUIRED_NETWORK.chainId,
+                chainName: REQUIRED_NETWORK.chainName,
+                nativeCurrency: REQUIRED_NETWORK.nativeCurrency,
+                rpcUrls: REQUIRED_NETWORK.rpcUrls,
+                blockExplorerUrls: REQUIRED_NETWORK.blockExplorerUrls
+              },
+            ],
+          });
+          
+          // If successful, close the warning and update UI
+          const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
+          networkSwitchLightbox.classList.add("hidden");
+          document.body.style.overflow = "";
+          
+          // Only reconnect if the user hasn't explicitly disconnected
+          if (!isConnected && !userDisconnected) {
+            // If connection was lost during network switch but user didn't disconnect
+            connectMetaMask();
+          } else if (isConnected) {
+            // Update the UI to show the correct network
+            updateFooterInfo();
+            
+            Swal.fire({
+              title: "Network Added & Switched!",
+              text: "Successfully switched to Optimism network",
+              icon: "success",
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000
+            });
+          }
+          
+        } catch (addError) {
+          console.error("Error adding Optimism network:", addError);
+          Swal.fire({
+            title: "Network Error",
+            text: "Failed to add Optimism network to MetaMask",
+            icon: "error"
+          });
+        }
+      } else {
+        console.error("Error switching network:", switchError);
+        Swal.fire({
+          title: "Network Error",
+          text: "Failed to switch to Optimism network",
+          icon: "error"
+        });
+        
+        // Only attempt reconnection if not explicitly disconnected
+        if (provider && !isConnected && !userDisconnected) {
+          // Give MetaMask a moment to recover from the switch operation
+          setTimeout(() => {
+            connectMetaMask();
+          }, 1000);
+        }
+      }
+    }
+  }
+  
+  // Function to check if user is on the correct network
+  function isCorrectNetwork() {
+    return chainId === REQUIRED_NETWORK.chainId;
+  }
 });
