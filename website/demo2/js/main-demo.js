@@ -561,6 +561,52 @@ document.addEventListener("DOMContentLoaded", function () {
     userTokenDropdown.style.display = "block";
   });
 
+  // Add click event to show filtered tokens when input is clicked
+  userInput.addEventListener("click", function() {
+    userTokenDropdown.innerHTML = "";
+    
+    // Get current input value for filtering
+    const query = this.value.toLowerCase();
+    
+    // Filter tokens based on current input text
+    const tokensToShow = query.length > 0 
+      ? userTokens.filter(token => token.toLowerCase().includes(query)) 
+      : userTokens;
+    
+    // Only show dropdown if we have tokens to display
+    if (tokensToShow.length === 0) {
+      userTokenDropdown.style.display = "none";
+      return;
+    }
+    
+    // Populate the dropdown with filtered tokens
+    tokensToShow.forEach((token) => {
+      const li = document.createElement("li");
+      li.textContent = token;
+      li.addEventListener("click", () => {
+        userInput.value = token;
+        userTokenDropdown.style.display = "none";
+        showRoundSelectionModal(token, "UserGenerated");
+      });
+      userTokenDropdown.appendChild(li);
+    });
+    
+    const rect = userInput.getBoundingClientRect();
+    userTokenDropdown.style.position = "absolute";
+    userTokenDropdown.style.top = rect.bottom + window.scrollY + "px";
+    userTokenDropdown.style.left = rect.left + window.scrollX + "px";
+    userTokenDropdown.style.width = rect.width + "px";
+    userTokenDropdown.style.display = "block";
+  });
+
+  // Add document click listener to hide dropdown when clicking outside
+  document.addEventListener("click", function(e) {
+    // If the click is outside both the input and the dropdown
+    if (e.target !== userInput && !userTokenDropdown.contains(e.target)) {
+      userTokenDropdown.style.display = "none";
+    }
+  });
+
   // ----------------------------
   // Datalist for Established Tokens (native)
   // ----------------------------
