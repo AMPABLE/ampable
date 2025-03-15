@@ -668,3 +668,54 @@ hr {
   background: #61afef;
   transition: width 0.3s ease;
 }
+
+/* Loading dots animation for portfolio balances */
+.loading-dots {
+  display: inline-block;
+}
+
+.loading-dots span {
+  animation: loadingDots 1.5s infinite;
+  opacity: 0;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 1s;
+}
+
+@keyframes loadingDots {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Portfolio refresh button */
+#refresh-portfolio-btn {
+  font-size: 12px;
+  padding: 3px 8px;
+  vertical-align: middle;
+}
+
+.refresh-icon {
+  display: inline-block;
+  font-style: normal;
+  font-weight: bold;
+  margin-right: 3px;
+}
+
+#refresh-portfolio-btn:hover .refresh-icon {
+  animation: rotate 1s linear;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -37,6 +37,36 @@ document.addEventListener("DOMContentLoaded", function () {
   let chainId = null;
   const CONTRACT_ADDRESS = "0xb8D1Ad0F6db11BD389120E969b36C0d93BFb84b5"; // Update with actual contract address
   
+  // USDC contract addresses on different networks
+  const USDC_CONTRACTS = {
+    // Ethereum Mainnet
+    "0x1": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    // Optimism
+    "0xa": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+    // Polygon
+    "0x89": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    // BSC
+    "0x38": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"
+  };
+  
+  // USDC ABI (minimal, just what we need for balanceOf)
+  const USDC_ABI = [
+    {
+      "constant": true,
+      "inputs": [{"name": "owner", "type": "address"}],
+      "name": "balanceOf",
+      "outputs": [{"name": "", "type": "uint256"}],
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [{"name": "", "type": "uint8"}],
+      "type": "function"
+    }
+  ];
+  
   // Flag to track if Web3 libraries are loaded
   let web3LibrariesLoaded = false;
   
@@ -405,6 +435,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!userDisconnected) {
       checkConnectionStatus();
     }
+    
+    // Update the portfolio network banner if portfolio is open
+    updatePortfolioNetworkBanner();
     
     updateFooterInfo();
     
@@ -789,24 +822,43 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     
-    // Check if on correct network
-    if (!isCorrectNetwork()) {
-      Swal.fire({
-        title: "Wrong Network",
-        html: "You need to be on the <strong>Optimism</strong> network to access your portfolio.<br><br>Please switch your network and try again.",
-        icon: "error"
-      });
-      return;
+    const portfolioOverlay = document.getElementById("portfolio-overlay");
+    
+    // Show portfolio regardless of network
+    portfolioOverlay.classList.remove("hidden");
+    
+    // Get the network warning element (will create if it doesn't exist)
+    let networkWarningBanner = document.getElementById("portfolio-network-warning");
+    if (!networkWarningBanner) {
+      networkWarningBanner = document.createElement("div");
+      networkWarningBanner.id = "portfolio-network-warning";
+      networkWarningBanner.style.backgroundColor = "#e06c75";
+      networkWarningBanner.style.color = "#ffffff";
+      networkWarningBanner.style.padding = "10px";
+      networkWarningBanner.style.marginBottom = "15px";
+      networkWarningBanner.style.borderRadius = "4px";
+      networkWarningBanner.style.display = "none";
+      
+      // Insert at the top of the portfolio modal content
+      const portfolioModal = document.querySelector(".portfolio-modal");
+      portfolioModal.insertBefore(networkWarningBanner, portfolioModal.firstChild);
     }
     
-    const portfolioOverlay = document.getElementById("portfolio-overlay");
-    portfolioOverlay.classList.remove("hidden");
+    // Use the shared function to update the network banner
+    updatePortfolioNetworkBanner();
+    
+    // Update portfolio data with current asset info
     document.getElementById("bitcoin-date").textContent =
       currentAsset && currentAsset.assetName === "Bitcoin"
         ? currentAsset.acquisitionDate
         : new Date().toLocaleString();
     document.getElementById("ethereum-date").textContent =
       new Date().toLocaleString();
+    
+    // Update balances via the shared function
+    updatePortfolioBalances();
+    
+    // Add close button event listener
     document
       .getElementById("close-portfolio-btn")
       .addEventListener("click", function () {
@@ -1178,8 +1230,13 @@ document.addEventListener("DOMContentLoaded", function () {
       
       // If successful, close the warning and update UI
       const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
-      networkSwitchLightbox.classList.add("hidden");
+      if (networkSwitchLightbox) {
+        networkSwitchLightbox.classList.add("hidden");
+      }
       document.body.style.overflow = "";
+      
+      // Update portfolio warning banner if portfolio is open
+      updatePortfolioNetworkBanner();
       
       // Only reconnect if the user hasn't explicitly disconnected
       if (!isConnected && !userDisconnected) {
@@ -1220,8 +1277,13 @@ document.addEventListener("DOMContentLoaded", function () {
           
           // If successful, close the warning and update UI
           const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
-          networkSwitchLightbox.classList.add("hidden");
+          if (networkSwitchLightbox) {
+            networkSwitchLightbox.classList.add("hidden");
+          }
           document.body.style.overflow = "";
+          
+          // Update portfolio warning banner if portfolio is open
+          updatePortfolioNetworkBanner();
           
           // Only reconnect if the user hasn't explicitly disconnected
           if (!isConnected && !userDisconnected) {
@@ -1273,4 +1335,125 @@ document.addEventListener("DOMContentLoaded", function () {
   function isCorrectNetwork() {
     return chainId === REQUIRED_NETWORK.chainId;
   }
+
+  // Function to update the portfolio network banner based on current network
+  function updatePortfolioNetworkBanner() {
+    // Only proceed if the portfolio is currently open
+    const portfolioOverlay = document.getElementById("portfolio-overlay");
+    if (!portfolioOverlay || portfolioOverlay.classList.contains("hidden")) {
+      return;
+    }
+    
+    // Get the network warning element
+    let networkWarningBanner = document.getElementById("portfolio-network-warning");
+    if (!networkWarningBanner) {
+      return;
+    }
+    
+    // Check if on correct network and show/hide warning accordingly
+    if (!isCorrectNetwork()) {
+      // Show warning if not on Optimism
+      networkWarningBanner.style.display = "block";
+      
+      // Get current network name for better user feedback
+      let currentNetworkName = "another network";
+      if (chainId) {
+        const chainIdDec = parseInt(chainId, 16);
+        switch (chainIdDec) {
+          case 1:
+            currentNetworkName = "Ethereum Mainnet";
+            break;
+          case 56:
+            currentNetworkName = "Binance Smart Chain";
+            break;
+          case 137:
+            currentNetworkName = "Polygon";
+            break;
+          default:
+            currentNetworkName = `Chain ID ${chainIdDec}`;
+        }
+      }
+      
+      // Update HTML content with network-specific message
+      networkWarningBanner.innerHTML = `
+        <strong>Wrong Network:</strong> You're viewing portfolio data from ${currentNetworkName}. 
+        <a href="#" id="portfolio-switch-network" style="color: #ffffff; text-decoration: underline;">Switch to Optimism</a> 
+        for full access to features.
+      `;
+      
+      // Add click handler for the switch network link
+      setTimeout(() => {
+        const switchLink = document.getElementById("portfolio-switch-network");
+        if (switchLink) {
+          switchLink.addEventListener("click", function(e) {
+            e.preventDefault();
+            switchToOptimism();
+          });
+        }
+      }, 0);
+      
+      // Also update balances when network changes
+      updatePortfolioBalances();
+    } else {
+      // Hide warning if on Optimism
+      networkWarningBanner.style.display = "none";
+      
+      // Update balances for Optimism
+      updatePortfolioBalances();
+    }
+  }
+  
+  // Function to update portfolio balances based on current network
+  async function updatePortfolioBalances() {
+    const ethBalanceSpan = document.getElementById("eth-balance");
+    const usdcBalanceSpan = document.getElementById("usdc-balance");
+    
+    if (!ethBalanceSpan || !usdcBalanceSpan || !isConnected || !web3) {
+      return;
+    }
+    
+    // Show loading state
+    ethBalanceSpan.innerHTML = '<span class="loading-dots">Loading<span>.</span><span>.</span><span>.</span></span>';
+    usdcBalanceSpan.innerHTML = '<span class="loading-dots">Loading<span>.</span><span>.</span><span>.</span></span>';
+    
+    try {
+      // Get ETH balance
+      const weiBalance = await web3.eth.getBalance(selectedAccount);
+      const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
+      const formattedEthBalance = parseFloat(ethBalance).toFixed(4);
+      ethBalanceSpan.textContent = formattedEthBalance;
+      
+      // Get USDC balance if contract exists on this network
+      const chainIdHex = chainId || "0x1"; // Default to Ethereum if not set
+      const usdcContractAddress = USDC_CONTRACTS[chainIdHex];
+      
+      if (usdcContractAddress) {
+        try {
+          const usdcContract = new web3.eth.Contract(USDC_ABI, usdcContractAddress);
+          const usdcDecimals = await usdcContract.methods.decimals().call();
+          const usdcRawBalance = await usdcContract.methods.balanceOf(selectedAccount).call();
+          const usdcBalance = usdcRawBalance / Math.pow(10, usdcDecimals);
+          const formattedUsdcBalance = parseFloat(usdcBalance).toFixed(2);
+          usdcBalanceSpan.textContent = `$${formattedUsdcBalance}`;
+        } catch (error) {
+          console.error("Error fetching USDC balance:", error);
+          usdcBalanceSpan.textContent = "$0.00";
+        }
+      } else {
+        // No USDC on this network or unknown network
+        usdcBalanceSpan.textContent = "Not available on this network";
+      }
+    } catch (error) {
+      console.error("Error fetching balances:", error);
+      ethBalanceSpan.textContent = "Error";
+      usdcBalanceSpan.textContent = "Error";
+    }
+  }
+
+  // Add event listener to refresh portfolio data when it's open
+  document.getElementById("refresh-portfolio-btn").addEventListener("click", function() {
+    if (isConnected) {
+      updatePortfolioBalances();
+    }
+  });
 });
