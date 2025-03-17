@@ -10,7 +10,7 @@ This README includes:
 - **Frontend Integration:** How the UI interacts with smart contract functions, including views and transactions.
 - **Security Considerations:** Addressing potential vulnerabilities and mitigation strategies.
 
-I’ll put everything together and provide the README shortly.
+
 
 # Smart Contract Deployment and Integration Guide
 
