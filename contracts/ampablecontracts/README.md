@@ -1,11 +1,3 @@
-# Ampable
-
-### Smart Contracts
-
-## Introduction
-
-/ampablecontracts contains the smart contracts.
-
   Overview:
    ---------
    The PredictiveGame contract is a fully on-chain, upgradeable game of skill.
