@@ -46,25 +46,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // Polygon
     "0x89": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
     // BSC
-    "0x38": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"
+    "0x38": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
   };
 
   // USDC ABI (minimal, just what we need for balanceOf)
   const USDC_ABI = [
     {
-      "constant": true,
-      "inputs": [{ "name": "owner", "type": "address" }],
-      "name": "balanceOf",
-      "outputs": [{ "name": "", "type": "uint256" }],
-      "type": "function"
+      constant: true,
+      inputs: [{ name: "owner", type: "address" }],
+      name: "balanceOf",
+      outputs: [{ name: "", type: "uint256" }],
+      type: "function",
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "decimals",
-      "outputs": [{ "name": "", "type": "uint8" }],
-      "type": "function"
-    }
+      constant: true,
+      inputs: [],
+      name: "decimals",
+      outputs: [{ name: "", type: "uint8" }],
+      type: "function",
+    },
   ];
 
   // Flag to track if Web3 libraries are loaded
@@ -77,10 +77,10 @@ document.addEventListener("DOMContentLoaded", function () {
     nativeCurrency: {
       name: "Ether",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     rpcUrls: ["https://mainnet.optimism.io"],
-    blockExplorerUrls: ["https://optimistic.etherscan.io"]
+    blockExplorerUrls: ["https://optimistic.etherscan.io"],
   };
 
   // Global history data
@@ -206,12 +206,14 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
 
       // Add event listener to the disconnect link
-      document.getElementById("disconnect-link").addEventListener("click", function (e) {
-        e.preventDefault();
-        if (confirm("Do you want to disconnect your wallet?")) {
-          disconnectWallet();
-        }
-      });
+      document
+        .getElementById("disconnect-link")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          if (confirm("Do you want to disconnect your wallet?")) {
+            disconnectWallet();
+          }
+        });
     }
   }
 
@@ -239,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Swal.fire({
           title: "Error",
           text: "Failed to load wallet connection libraries. Please try again.",
-          icon: "error"
+          icon: "error",
         });
         return;
       }
@@ -270,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
               Swal.fire(
                 "Coming Soon",
                 "WalletConnect integration is coming soon!",
-                "info"
+                "info",
               );
             }, 500);
           });
@@ -288,18 +290,23 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Check if Web3 is already available
-      if (typeof Web3 !== 'undefined' && typeof detectEthereumProvider !== 'undefined') {
+      if (
+        typeof Web3 !== "undefined" &&
+        typeof detectEthereumProvider !== "undefined"
+      ) {
         web3LibrariesLoaded = true;
         resolve();
         return;
       }
 
       // If not loaded, dynamically load the scripts
-      const web3Script = document.createElement('script');
-      web3Script.src = 'https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js';
+      const web3Script = document.createElement("script");
+      web3Script.src =
+        "https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js";
       web3Script.onload = () => {
-        const providerScript = document.createElement('script');
-        providerScript.src = 'https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js';
+        const providerScript = document.createElement("script");
+        providerScript.src =
+          "https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js";
         providerScript.onload = () => {
           web3LibrariesLoaded = true;
           resolve();
@@ -334,7 +341,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Swal.fire(
           "MetaMask Not Found",
           "Please install MetaMask extension and refresh the page.",
-          "error"
+          "error",
         );
         return;
       }
@@ -343,19 +350,21 @@ document.addEventListener("DOMContentLoaded", function () {
       userDisconnected = false;
 
       // Request account access
-      const accounts = await provider.request({ method: 'eth_requestAccounts' });
+      const accounts = await provider.request({
+        method: "eth_requestAccounts",
+      });
 
       if (accounts.length === 0) {
         Swal.fire(
           "Connection Failed",
           "No accounts found or user denied access.",
-          "error"
+          "error",
         );
         return;
       }
 
       // Get the connected chain ID
-      chainId = await provider.request({ method: 'eth_chainId' });
+      chainId = await provider.request({ method: "eth_chainId" });
 
       // Initialize Web3
       web3 = new Web3(provider);
@@ -371,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function () {
       Swal.fire(
         "Connected!",
         `Successfully connected to MetaMask with account ${selectedAccount.slice(0, 6)}...${selectedAccount.slice(-4)}`,
-        "success"
+        "success",
       );
 
       // Set up event listeners for MetaMask events
@@ -379,13 +388,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Check if the user is on the correct network
       checkNetwork();
-
     } catch (error) {
       console.error("Error connecting to MetaMask:", error);
       Swal.fire(
         "Connection Error",
         "Failed to connect to MetaMask: " + error.message,
-        "error"
+        "error",
       );
     }
   }
@@ -393,15 +401,15 @@ document.addEventListener("DOMContentLoaded", function () {
   function setupMetaMaskListeners() {
     // Remove any existing listeners first
     if (provider) {
-      provider.removeListener('accountsChanged', handleAccountsChanged);
-      provider.removeListener('chainChanged', handleChainChanged);
-      provider.removeListener('disconnect', handleDisconnect);
+      provider.removeListener("accountsChanged", handleAccountsChanged);
+      provider.removeListener("chainChanged", handleChainChanged);
+      provider.removeListener("disconnect", handleDisconnect);
     }
 
     // Add new listeners with named functions so they can be removed later
-    provider.on('accountsChanged', handleAccountsChanged);
-    provider.on('chainChanged', handleChainChanged);
-    provider.on('disconnect', handleDisconnect);
+    provider.on("accountsChanged", handleAccountsChanged);
+    provider.on("chainChanged", handleChainChanged);
+    provider.on("disconnect", handleDisconnect);
   }
 
   // Handler functions for MetaMask events
@@ -424,7 +432,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 3000
+        timer: 3000,
       });
     }
   }
@@ -452,7 +460,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 3000
+        timer: 3000,
       });
     } else if (isConnected) {
       // Only show network warning if actually connected
@@ -477,7 +485,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       // Check if we're still connected
-      const accounts = await provider.request({ method: 'eth_accounts' });
+      const accounts = await provider.request({ method: "eth_accounts" });
 
       if (accounts && accounts.length > 0) {
         isConnected = true;
@@ -502,9 +510,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Remove event listeners if provider exists
     if (provider) {
-      provider.removeListener('accountsChanged', handleAccountsChanged);
-      provider.removeListener('chainChanged', handleChainChanged);
-      provider.removeListener('disconnect', handleDisconnect);
+      provider.removeListener("accountsChanged", handleAccountsChanged);
+      provider.removeListener("chainChanged", handleChainChanged);
+      provider.removeListener("disconnect", handleDisconnect);
     }
 
     web3 = null;
@@ -517,7 +525,7 @@ document.addEventListener("DOMContentLoaded", function () {
       toast: true,
       position: "top-end",
       showConfirmButton: false,
-      timer: 3000
+      timer: 3000,
     });
   }
 
@@ -570,9 +578,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const query = this.value.toLowerCase();
 
     // Filter tokens based on current input text
-    const tokensToShow = query.length > 0
-      ? userTokens.filter(token => token.toLowerCase().includes(query))
-      : userTokens;
+    const tokensToShow =
+      query.length > 0
+        ? userTokens.filter((token) => token.toLowerCase().includes(query))
+        : userTokens;
 
     // Only show dropdown if we have tokens to display
     if (tokensToShow.length === 0) {
@@ -719,14 +728,14 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
           <div class="gauge-container" id="asset-gauge">
             <div class="gauge">
-              <div class="needle" id="asset-needle" style="transform: rotate(45deg);"></div>
+              <div class="needle" id="asset-needle" style="transform: rotate(60deg);"></div>
             </div>
             <div class="gauge-label-down">
-              <div id="asset-down-percent">50%</div>
+              <div id="asset-down-percent">25%</div>
               <div class="small-text">Predict Down</div>
             </div>
             <div class="gauge-label-up">
-              <div id="asset-up-percent">50%</div>
+              <div id="asset-up-percent">75%</div>
               <div class="small-text">Predict Up</div>
             </div>
           </div>
@@ -789,7 +798,7 @@ document.addEventListener("DOMContentLoaded", function () {
       Swal.fire({
         title: "Wrong Network",
         html: "You need to be on the <strong>Optimism</strong> network to buy prediction tickets.<br><br>Please switch your network and try again.",
-        icon: "error"
+        icon: "error",
       });
       return;
     }
@@ -841,17 +850,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateGauge() {
-    const up = currentAsset.currentRoundData.upPool;
-    const down = currentAsset.currentRoundData.downPool;
-    const total = up + down;
-    const upPercent = total > 0 ? Math.round((up / total) * 100) : 50;
-    const downPercent = 100 - upPercent;
+    // Hardcoded gauge percentages
+    const upPercent = 75;
+    const downPercent = 25;
+
     document.getElementById("asset-up-percent").textContent = upPercent + "%";
     document.getElementById("asset-down-percent").textContent =
       downPercent + "%";
-    const rotation = (upPercent - 50) * 1.8;
+
+    // For a gauge where 0° is at 12:00,
+    // using a conversion factor of 2.4 gives a rotation of:
+    // (75 - 50) * 2.4 = 25 * 2.4 = 60°
+    // which points roughly toward 2:00 on a clock.
+    const rotation = (upPercent - 50) * 1.5;
     document.getElementById("asset-needle").style.transform =
-      `rotate(${0 + rotation}deg)`;
+      `rotate(${rotation}deg)`;
   }
 
   // ----------------------------
@@ -864,7 +877,7 @@ document.addEventListener("DOMContentLoaded", function () {
       Swal.fire(
         "Not Connected",
         "Please connect your wallet to view your portfolio.",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -875,7 +888,9 @@ document.addEventListener("DOMContentLoaded", function () {
     portfolioOverlay.classList.remove("hidden");
 
     // Get the network warning element (will create if it doesn't exist)
-    let networkWarningBanner = document.getElementById("portfolio-network-warning");
+    let networkWarningBanner = document.getElementById(
+      "portfolio-network-warning",
+    );
     if (!networkWarningBanner) {
       networkWarningBanner = document.createElement("div");
       networkWarningBanner.id = "portfolio-network-warning";
@@ -888,7 +903,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Insert at the top of the portfolio modal content
       const portfolioModal = document.querySelector(".portfolio-modal");
-      portfolioModal.insertBefore(networkWarningBanner, portfolioModal.firstChild);
+      portfolioModal.insertBefore(
+        networkWarningBanner,
+        portfolioModal.firstChild,
+      );
     }
 
     // Use the shared function to update the network banner
@@ -1008,153 +1026,153 @@ document.addEventListener("DOMContentLoaded", function () {
   // CREATE ASSET LIGHTBOX
   // ----------------------------
   addAssetBtn.addEventListener("click", showAddAssetModal);
- 
-   function showAddAssetModal() {
+
+  function showAddAssetModal() {
     if (!isConnected) {
       Swal.fire(
         "Not Connected",
         "Please connect your wallet first to create assets.",
-        "warning"
+        "warning",
       );
       return;
     }
-    
+
     // Check if on correct network
     if (!isCorrectNetwork()) {
       Swal.fire({
         title: "Wrong Network",
         html: "You need to be on the <strong>Optimism</strong> network to create assets.<br><br>Please switch your network and try again.",
-        icon: "error"
+        icon: "error",
       });
       return;
     }
-  // const createAssetLightbox = document.getElementById("create-asset-lightbox");
-  // const closeAssetLightboxBtn = document.getElementById("close-asset-lightbox");
-  // const cancelAssetCreationBtn = document.getElementById("cancel-asset-creation");
-  // const createAssetForm = document.getElementById("create-asset-form");
+    // const createAssetLightbox = document.getElementById("create-asset-lightbox");
+    // const closeAssetLightboxBtn = document.getElementById("close-asset-lightbox");
+    // const cancelAssetCreationBtn = document.getElementById("cancel-asset-creation");
+    // const createAssetForm = document.getElementById("create-asset-form");
 
-  // // Open lightbox when Create Asset button is clicked
-  // createAssetBtn.addEventListener("click", function() {
-  //   if (!isConnected) {
-  //     Swal.fire(
-  //       "Not Connected",
-  //       "Please connect your wallet first to create assets.",
-  //       "warning"
-  //     );
-  //     return;
-  //   }
+    // // Open lightbox when Create Asset button is clicked
+    // createAssetBtn.addEventListener("click", function() {
+    //   if (!isConnected) {
+    //     Swal.fire(
+    //       "Not Connected",
+    //       "Please connect your wallet first to create assets.",
+    //       "warning"
+    //     );
+    //     return;
+    //   }
 
-  //   // Check if on correct network
-  //   if (!isCorrectNetwork()) {
-  //     Swal.fire({
-  //       title: "Wrong Network",
-  //       html: "You need to be on the <strong>Optimism</strong> network to create assets.<br><br>Please switch your network and try again.",
-  //       icon: "error"
-  //     });
-  //     return;
-  //   }
+    //   // Check if on correct network
+    //   if (!isCorrectNetwork()) {
+    //     Swal.fire({
+    //       title: "Wrong Network",
+    //       html: "You need to be on the <strong>Optimism</strong> network to create assets.<br><br>Please switch your network and try again.",
+    //       icon: "error"
+    //     });
+    //     return;
+    //   }
 
-  //   createAssetLightbox.classList.remove("hidden");
-  //   document.body.style.overflow = "hidden"; // Prevent scrolling behind lightbox
-  // });
+    //   createAssetLightbox.classList.remove("hidden");
+    //   document.body.style.overflow = "hidden"; // Prevent scrolling behind lightbox
+    // });
 
-  // // Close lightbox functions
-  // function closeAssetLightbox() {
-  //   createAssetLightbox.classList.add("hidden");
-  //   document.body.style.overflow = ""; // Re-enable scrolling
-  //   createAssetForm.reset(); // Reset form fields
-  // }
+    // // Close lightbox functions
+    // function closeAssetLightbox() {
+    //   createAssetLightbox.classList.add("hidden");
+    //   document.body.style.overflow = ""; // Re-enable scrolling
+    //   createAssetForm.reset(); // Reset form fields
+    // }
 
-  // closeAssetLightboxBtn.addEventListener("click", closeAssetLightbox);
-  // cancelAssetCreationBtn.addEventListener("click", closeAssetLightbox);
+    // closeAssetLightboxBtn.addEventListener("click", closeAssetLightbox);
+    // cancelAssetCreationBtn.addEventListener("click", closeAssetLightbox);
 
-  // // Handle form submission
-  // createAssetForm.addEventListener("submit", function(e) {
-  //   e.preventDefault();
+    // // Handle form submission
+    // createAssetForm.addEventListener("submit", function(e) {
+    //   e.preventDefault();
 
-  //   // Get form values
-  //   const assetName = document.getElementById("asset-name").value.trim();
-  //   const tokenAddress = document.getElementById("token-address").value.trim();
-  //   const communicationLink = document.getElementById("communication-link").value.trim();
-  //   const priceOracleUrl = document.getElementById("price-oracle-url").value.trim();
-  //   const roundInterval = document.getElementById("round-interval").value;
-  //   const regulatoryDisclosure = document.getElementById("regulatory-disclosure").value.trim();
+    //   // Get form values
+    //   const assetName = document.getElementById("asset-name").value.trim();
+    //   const tokenAddress = document.getElementById("token-address").value.trim();
+    //   const communicationLink = document.getElementById("communication-link").value.trim();
+    //   const priceOracleUrl = document.getElementById("price-oracle-url").value.trim();
+    //   const roundInterval = document.getElementById("round-interval").value;
+    //   const regulatoryDisclosure = document.getElementById("regulatory-disclosure").value.trim();
 
-  //   // Validate URL fields
-  //   const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    //   // Validate URL fields
+    //   const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
 
-  //   let hasErrors = false;
-  //   let errorMessage = "";
+    //   let hasErrors = false;
+    //   let errorMessage = "";
 
-  //   if (!urlPattern.test(communicationLink)) {
-  //     hasErrors = true;
-  //     errorMessage += "• Communication Link must be a valid URL\n";
-  //   }
+    //   if (!urlPattern.test(communicationLink)) {
+    //     hasErrors = true;
+    //     errorMessage += "• Communication Link must be a valid URL\n";
+    //   }
 
-  //   if (!urlPattern.test(priceOracleUrl)) {
-  //     hasErrors = true;
-  //     errorMessage += "• Price Oracle URL must be a valid URL\n";
-  //   }
+    //   if (!urlPattern.test(priceOracleUrl)) {
+    //     hasErrors = true;
+    //     errorMessage += "• Price Oracle URL must be a valid URL\n";
+    //   }
 
-  //   if (hasErrors) {
-  //     Swal.fire({
-  //       title: "Validation Error",
-  //       html: `<div style="text-align: left; color: #e06c75;">${errorMessage.replace(/\n/g, '<br>')}</div>`,
-  //       icon: "error"
-  //     });
-  //     return;
-  //   }
+    //   if (hasErrors) {
+    //     Swal.fire({
+    //       title: "Validation Error",
+    //       html: `<div style="text-align: left; color: #e06c75;">${errorMessage.replace(/\n/g, '<br>')}</div>`,
+    //       icon: "error"
+    //     });
+    //     return;
+    //   }
 
-  //   // Create asset object
-  //   const newAsset = {
-  //     id: createdAssets.length + 1,
-  //     name: assetName,
-  //     tokenAddress: tokenAddress,
-  //     communicationLink: communicationLink,
-  //     priceOracleUrl: priceOracleUrl,
-  //     roundInterval: parseInt(roundInterval),
-  //     regulatoryDisclosure: regulatoryDisclosure,
-  //     dateCreated: new Date().toISOString(),
-  //     createdBy: selectedAccount
-  //   };
+    //   // Create asset object
+    //   const newAsset = {
+    //     id: createdAssets.length + 1,
+    //     name: assetName,
+    //     tokenAddress: tokenAddress,
+    //     communicationLink: communicationLink,
+    //     priceOracleUrl: priceOracleUrl,
+    //     roundInterval: parseInt(roundInterval),
+    //     regulatoryDisclosure: regulatoryDisclosure,
+    //     dateCreated: new Date().toISOString(),
+    //     createdBy: selectedAccount
+    //   };
 
-  //   // Add to created assets array
-  //   createdAssets.push(newAsset);
+    //   // Add to created assets array
+    //   createdAssets.push(newAsset);
 
-  //   // Add to user tokens for display in dropdown
-  //   if (!userTokens.includes(assetName)) {
-  //     userTokens.push(assetName);
-  //   }
+    //   // Add to user tokens for display in dropdown
+    //   if (!userTokens.includes(assetName)) {
+    //     userTokens.push(assetName);
+    //   }
 
-  //   // Show success message
-  Swal.fire({
-    title: "Add Asset",
-    html: `
+    //   // Show success message
+    Swal.fire({
+      title: "Add Asset",
+      html: `
         <p>Is this an Existing Token or a New Token?</p>
          <label><input type="radio" name="asset-add-kind" value="existing" checked> Existing Token</label>
          <label><input type="radio" name="asset-add-kind" value="new"> New Token</label>
       `,
-    showCancelButton: true,
-    confirmButtonText: "Next",
-    preConfirm: () => {
-      const kind = Swal.getPopup().querySelector(
-        'input[name="asset-add-kind"]:checked',
-      ).value;
-      return kind;
-    },
-  }).then((result) => {
-    if (result.value) {
-      const kind = result.value;
-      let tokenAddressField = "";
-      if (kind === "existing") {
-        tokenAddressField = `<tr>
+      showCancelButton: true,
+      confirmButtonText: "Next",
+      preConfirm: () => {
+        const kind = Swal.getPopup().querySelector(
+          'input[name="asset-add-kind"]:checked',
+        ).value;
+        return kind;
+      },
+    }).then((result) => {
+      if (result.value) {
+        const kind = result.value;
+        let tokenAddressField = "";
+        if (kind === "existing") {
+          tokenAddressField = `<tr>
                <td><label for="asset-address">Token Address:</label></td>
                <td><input type="text" id="asset-address" class="swal2-input" placeholder="Token Address"></td>
              </tr>`;
-      }
-      Swal.fire({
-        title: "Asset Details",
-        html: `
+        }
+        Swal.fire({
+          title: "Asset Details",
+          html: `
              <table style="width:100%; text-align:left; font-size:0.8rem;">
                <tr>
                  <td><label for="asset-name">Asset Name:</label></td>
@@ -1227,120 +1245,120 @@ document.addEventListener("DOMContentLoaded", function () {
                </tr>
              </table>
            `,
-        showCancelButton: true,
-        confirmButtonText: "Add Asset",
-        preConfirm: () => {
-          const name = document.getElementById("asset-name").value.trim();
-          const symbol = document.getElementById("asset-symbol").value.trim();
-          const decimals = document
-            .getElementById("asset-decimals")
-            .value.trim();
-          const supply = document.getElementById("asset-supply").value.trim();
-          const description = document
-            .getElementById("asset-description")
-            .value.trim();
-          const category = document.getElementById("asset-category").value;
-          const discord = document.getElementById("discord-url").value.trim();
-          const otherComm = document
-            .getElementById("other-comm-url")
-            .value.trim();
-          const entityName = document
-            .getElementById("entity-name")
-            .value.trim();
-          const entityAddress = document
-            .getElementById("entity-address")
-            .value.trim();
-          const contactPhone = document
-            .getElementById("contact-phone")
-            .value.trim();
-          const contactEmail = document
-            .getElementById("contact-email")
-            .value.trim();
-          const regulatoryLink = document
-            .getElementById("regulatory-link")
-            .value.trim();
-          const oracle = document.getElementById("price-oracle").value.trim();
-          const interval = document
-            .getElementById("asset-interval")
-            .value.trim();
-          let tokenAddress = "";
-          if (kind === "existing") {
-            tokenAddress = document
-              .getElementById("asset-address")
+          showCancelButton: true,
+          confirmButtonText: "Add Asset",
+          preConfirm: () => {
+            const name = document.getElementById("asset-name").value.trim();
+            const symbol = document.getElementById("asset-symbol").value.trim();
+            const decimals = document
+              .getElementById("asset-decimals")
               .value.trim();
-            if (!tokenAddress) {
-              Swal.showValidationMessage("Please enter the Token Address");
+            const supply = document.getElementById("asset-supply").value.trim();
+            const description = document
+              .getElementById("asset-description")
+              .value.trim();
+            const category = document.getElementById("asset-category").value;
+            const discord = document.getElementById("discord-url").value.trim();
+            const otherComm = document
+              .getElementById("other-comm-url")
+              .value.trim();
+            const entityName = document
+              .getElementById("entity-name")
+              .value.trim();
+            const entityAddress = document
+              .getElementById("entity-address")
+              .value.trim();
+            const contactPhone = document
+              .getElementById("contact-phone")
+              .value.trim();
+            const contactEmail = document
+              .getElementById("contact-email")
+              .value.trim();
+            const regulatoryLink = document
+              .getElementById("regulatory-link")
+              .value.trim();
+            const oracle = document.getElementById("price-oracle").value.trim();
+            const interval = document
+              .getElementById("asset-interval")
+              .value.trim();
+            let tokenAddress = "";
+            if (kind === "existing") {
+              tokenAddress = document
+                .getElementById("asset-address")
+                .value.trim();
+              if (!tokenAddress) {
+                Swal.showValidationMessage("Please enter the Token Address");
+                return false;
+              }
+            }
+            if (
+              !name ||
+              !symbol ||
+              !decimals ||
+              !supply ||
+              !description ||
+              !category ||
+              !discord ||
+              !otherComm ||
+              !entityName ||
+              !entityAddress ||
+              !contactPhone ||
+              !contactEmail ||
+              !oracle ||
+              !interval
+            ) {
+              Swal.showValidationMessage("Please fill out all required fields");
               return false;
             }
+            return {
+              name,
+              symbol,
+              decimals,
+              supply,
+              description,
+              category,
+              discord,
+              otherComm,
+              entityName,
+              entityAddress,
+              contactPhone,
+              contactEmail,
+              regulatoryLink,
+              oracle,
+              interval,
+              tokenAddress,
+              kind,
+            };
+          },
+        }).then((result) => {
+          if (result.value) {
+            Swal.fire({
+              title: "Processing Asset Addition",
+              html: '<p class="pending-dots"><span>.</span><span>.</span><span>.</span></p>',
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+            setTimeout(() => {
+              const assetLink =
+                "https://ampable.akashnetwork.io/token/0x" +
+                Math.floor(Math.random() * 1e16).toString(16);
+              Swal.fire(
+                "Success",
+                `Asset added! View at: <a href="${assetLink}" target="_blank">${assetLink}</a>`,
+                "success",
+              );
+              userTokens.push(result.value.name);
+              // Refresh the custom dropdown by clearing it.
+              userTokenDropdown.innerHTML = "";
+            }, 3000);
           }
-          if (
-            !name ||
-            !symbol ||
-            !decimals ||
-            !supply ||
-            !description ||
-            !category ||
-            !discord ||
-            !otherComm ||
-            !entityName ||
-            !entityAddress ||
-            !contactPhone ||
-            !contactEmail ||
-            !oracle ||
-            !interval
-          ) {
-            Swal.showValidationMessage("Please fill out all required fields");
-            return false;
-          }
-          return {
-            name,
-            symbol,
-            decimals,
-            supply,
-            description,
-            category,
-            discord,
-            otherComm,
-            entityName,
-            entityAddress,
-            contactPhone,
-            contactEmail,
-            regulatoryLink,
-            oracle,
-            interval,
-            tokenAddress,
-            kind,
-          };
-        },
-      }).then((result) => {
-        if (result.value) {
-          Swal.fire({
-            title: "Processing Asset Addition",
-            html: '<p class="pending-dots"><span>.</span><span>.</span><span>.</span></p>',
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            },
-          });
-          setTimeout(() => {
-            const assetLink =
-              "https://ampable.akashnetwork.io/token/0x" +
-              Math.floor(Math.random() * 1e16).toString(16);
-            Swal.fire(
-              "Success",
-              `Asset added! View at: <a href="${assetLink}" target="_blank">${assetLink}</a>`,
-              "success",
-            );
-            userTokens.push(result.value.name);
-            // Refresh the custom dropdown by clearing it.
-            userTokenDropdown.innerHTML = "";
-          }, 3000);
-        }
-      });
-    }
-    // icon: "success"
-  });
-}
+        });
+      }
+      // icon: "success"
+    });
+  }
 
   //   // Close lightbox and reset form
   //   closeAssetLightbox();
@@ -1403,9 +1421,11 @@ document.addEventListener("DOMContentLoaded", function () {
           howItWorksText.addEventListener("click", () => {
             howOverlay.classList.remove("hidden");
           });
-          document.getElementById("close-how-btn").addEventListener("click", () => {
-            howOverlay.classList.add("hidden");
-          });
+          document
+            .getElementById("close-how-btn")
+            .addEventListener("click", () => {
+              howOverlay.classList.add("hidden");
+            });
 
           // Remove loading overlay with slight delay for smooth transition
           setTimeout(() => {
@@ -1419,7 +1439,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Setup network listeners separately
   function setupNetworkListeners() {
     const switchNetworkBtn = document.getElementById("switch-network-btn");
-    const closeNetworkWarningBtn = document.getElementById("close-network-warning");
+    const closeNetworkWarningBtn = document.getElementById(
+      "close-network-warning",
+    );
 
     if (switchNetworkBtn) {
       switchNetworkBtn.addEventListener("click", switchToOptimism);
@@ -1427,7 +1449,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (closeNetworkWarningBtn) {
       closeNetworkWarningBtn.addEventListener("click", function () {
-        const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
+        const networkSwitchLightbox = document.getElementById(
+          "network-switch-lightbox",
+        );
         networkSwitchLightbox.classList.add("hidden");
         document.body.style.overflow = "";
 
@@ -1438,7 +1462,7 @@ document.addEventListener("DOMContentLoaded", function () {
           toast: true,
           position: "top-end",
           showConfirmButton: false,
-          timer: 4000
+          timer: 4000,
         });
       });
     }
@@ -1453,7 +1477,9 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
+    const networkSwitchLightbox = document.getElementById(
+      "network-switch-lightbox",
+    );
     const currentNetworkSpan = document.getElementById("current-network-name");
 
     if (chainId !== REQUIRED_NETWORK.chainId) {
@@ -1497,12 +1523,14 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       // First try to switch to the Optimism network
       await provider.request({
-        method: 'wallet_switchEthereumChain',
+        method: "wallet_switchEthereumChain",
         params: [{ chainId: REQUIRED_NETWORK.chainId }],
       });
 
       // If successful, close the warning and update UI
-      const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
+      const networkSwitchLightbox = document.getElementById(
+        "network-switch-lightbox",
+      );
       if (networkSwitchLightbox) {
         networkSwitchLightbox.classList.add("hidden");
       }
@@ -1526,30 +1554,31 @@ document.addEventListener("DOMContentLoaded", function () {
           toast: true,
           position: "top-end",
           showConfirmButton: false,
-          timer: 3000
+          timer: 3000,
         });
       }
-
     } catch (switchError) {
       // This error code indicates that the chain has not been added to MetaMask.
       if (switchError.code === 4902) {
         try {
           // Add the Optimism network to MetaMask
           await provider.request({
-            method: 'wallet_addEthereumChain',
+            method: "wallet_addEthereumChain",
             params: [
               {
                 chainId: REQUIRED_NETWORK.chainId,
                 chainName: REQUIRED_NETWORK.chainName,
                 nativeCurrency: REQUIRED_NETWORK.nativeCurrency,
                 rpcUrls: REQUIRED_NETWORK.rpcUrls,
-                blockExplorerUrls: REQUIRED_NETWORK.blockExplorerUrls
+                blockExplorerUrls: REQUIRED_NETWORK.blockExplorerUrls,
               },
             ],
           });
 
           // If successful, close the warning and update UI
-          const networkSwitchLightbox = document.getElementById("network-switch-lightbox");
+          const networkSwitchLightbox = document.getElementById(
+            "network-switch-lightbox",
+          );
           if (networkSwitchLightbox) {
             networkSwitchLightbox.classList.add("hidden");
           }
@@ -1573,16 +1602,15 @@ document.addEventListener("DOMContentLoaded", function () {
               toast: true,
               position: "top-end",
               showConfirmButton: false,
-              timer: 3000
+              timer: 3000,
             });
           }
-
         } catch (addError) {
           console.error("Error adding Optimism network:", addError);
           Swal.fire({
             title: "Network Error",
             text: "Failed to add Optimism network to MetaMask",
-            icon: "error"
+            icon: "error",
           });
         }
       } else {
@@ -1590,7 +1618,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Swal.fire({
           title: "Network Error",
           text: "Failed to switch to Optimism network",
-          icon: "error"
+          icon: "error",
         });
 
         // Only attempt reconnection if not explicitly disconnected
@@ -1618,7 +1646,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Get the network warning element
-    let networkWarningBanner = document.getElementById("portfolio-network-warning");
+    let networkWarningBanner = document.getElementById(
+      "portfolio-network-warning",
+    );
     if (!networkWarningBanner) {
       return;
     }
@@ -1649,8 +1679,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Update HTML content with network-specific message
       networkWarningBanner.innerHTML = `
-        <strong>Wrong Network:</strong> You're viewing portfolio data from ${currentNetworkName}. 
-        <a href="#" id="portfolio-switch-network" style="color: #ffffff; text-decoration: underline;">Switch to Optimism</a> 
+        <strong>Wrong Network:</strong> You're viewing portfolio data from ${currentNetworkName}.
+        <a href="#" id="portfolio-switch-network" style="color: #ffffff; text-decoration: underline;">Switch to Optimism</a>
         for full access to features.
       `;
 
@@ -1686,13 +1716,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Show loading state
-    ethBalanceSpan.innerHTML = '<span class="loading-dots">Loading<span>.</span><span>.</span><span>.</span></span>';
-    usdcBalanceSpan.innerHTML = '<span class="loading-dots">Loading<span>.</span><span>.</span><span>.</span></span>';
+    ethBalanceSpan.innerHTML =
+      '<span class="loading-dots">Loading<span>.</span><span>.</span><span>.</span></span>';
+    usdcBalanceSpan.innerHTML =
+      '<span class="loading-dots">Loading<span>.</span><span>.</span><span>.</span></span>';
 
     try {
       // Get ETH balance
       const weiBalance = await web3.eth.getBalance(selectedAccount);
-      const ethBalance = web3.utils.fromWei(weiBalance, 'ether');
+      const ethBalance = web3.utils.fromWei(weiBalance, "ether");
       const formattedEthBalance = parseFloat(ethBalance).toFixed(4);
       ethBalanceSpan.textContent = formattedEthBalance;
 
@@ -1702,9 +1734,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (usdcContractAddress) {
         try {
-          const usdcContract = new web3.eth.Contract(USDC_ABI, usdcContractAddress);
+          const usdcContract = new web3.eth.Contract(
+            USDC_ABI,
+            usdcContractAddress,
+          );
           const usdcDecimals = await usdcContract.methods.decimals().call();
-          const usdcRawBalance = await usdcContract.methods.balanceOf(selectedAccount).call();
+          const usdcRawBalance = await usdcContract.methods
+            .balanceOf(selectedAccount)
+            .call();
           const usdcBalance = usdcRawBalance / Math.pow(10, usdcDecimals);
           const formattedUsdcBalance = parseFloat(usdcBalance).toFixed(2);
           usdcBalanceSpan.textContent = `$${formattedUsdcBalance}`;
@@ -1724,9 +1761,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Add event listener to refresh portfolio data when it's open
-  document.getElementById("refresh-portfolio-btn").addEventListener("click", function () {
-    if (isConnected) {
-      updatePortfolioBalances();
-    }
-  });
+  document
+    .getElementById("refresh-portfolio-btn")
+    .addEventListener("click", function () {
+      if (isConnected) {
+        updatePortfolioBalances();
+      }
+    });
 });

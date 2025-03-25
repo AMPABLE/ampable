@@ -19,7 +19,19 @@ body {
     flex-wrap: wrap;
 }
 
-.top-bar .left-group,
+/* Updated Left Group for Top Bar */
+.top-bar .left-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.top-bar .left-group .logo {
+    height: 20px;
+    width: 60px;
+}
+
+/* Footer left group remains unchanged */
 .footer-bar .left-group {
     display: flex;
     align-items: center;
@@ -385,7 +397,7 @@ hr {
 
 /* Network indicators */
 .network-ethereum {
-    color: #62688F;
+    color: #62688f;
     font-weight: bold;
 }
 
@@ -617,105 +629,195 @@ hr {
 
 /* Loading indicator */
 .loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(40, 44, 52, 0.9);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(40, 44, 52, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
 }
 
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #5c6370;
-  border-top: 5px solid #61afef;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
+    width: 50px;
+    height: 50px;
+    border: 5px solid #5c6370;
+    border-top: 5px solid #61afef;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-message {
-  color: #abb2bf;
-  font-size: 18px;
-  margin-top: 15px;
-  text-align: center;
+    color: #abb2bf;
+    font-size: 18px;
+    margin-top: 15px;
+    text-align: center;
 }
 
 /* Status for progressive loading stages */
 .loading-status {
-  width: 200px;
-  height: 4px;
-  background: #3c4047;
-  border-radius: 2px;
-  margin-top: 20px;
-  overflow: hidden;
+    width: 200px;
+    height: 4px;
+    background: #3c4047;
+    border-radius: 2px;
+    margin-top: 20px;
+    overflow: hidden;
 }
 
 .loading-status-bar {
-  height: 100%;
-  width: 0%;
-  background: #61afef;
-  transition: width 0.3s ease;
+    height: 100%;
+    width: 0%;
+    background: #61afef;
+    transition: width 0.3s ease;
 }
 
 /* Loading dots animation for portfolio balances */
 .loading-dots {
-  display: inline-block;
+    display: inline-block;
 }
 
 .loading-dots span {
-  animation: loadingDots 1.5s infinite;
-  opacity: 0;
+    animation: loadingDots 1.5s infinite;
+    opacity: 0;
 }
 
 .loading-dots span:nth-child(1) {
-  animation-delay: 0s;
+    animation-delay: 0s;
 }
 
 .loading-dots span:nth-child(2) {
-  animation-delay: 0.5s;
+    animation-delay: 0.5s;
 }
 
 .loading-dots span:nth-child(3) {
-  animation-delay: 1s;
+    animation-delay: 1s;
 }
 
 @keyframes loadingDots {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 /* Portfolio refresh button */
 #refresh-portfolio-btn {
-  font-size: 12px;
-  padding: 3px 8px;
-  vertical-align: middle;
+    font-size: 12px;
+    padding: 3px 8px;
+    vertical-align: middle;
 }
 
 .refresh-icon {
-  display: inline-block;
-  font-style: normal;
-  font-weight: bold;
-  margin-right: 3px;
+    display: inline-block;
+    font-style: normal;
+    font-weight: bold;
+    margin-right: 3px;
 }
 
 #refresh-portfolio-btn:hover .refresh-icon {
-  animation: rotate 1s linear;
+    animation: rotate 1s linear;
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* -----------------------------------------------------
+   New Top Bar Updates
+-------------------------------------------------------*/
+
+/* New grouping for search items */
+.search-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.search-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Updated styling for the right-group */
+.top-bar .right-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+/* Override Connect Wallet button to be white with dark text */
+.wallet-btn {
+    background: #fff !important;
+    color: #282c34 !important;
+    border: 1px solid #5c6370;
+}
+
+/* Group Portfolio and Add Asset buttons side by side */
+.portfolio-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .top-bar .right-group {
+        align-items: stretch;
+    }
+    .portfolio-group {
+        flex-direction: column;
+    }
+}
+
+.alert-banner {
+    background-color: #ff5555; /* Red background */
+    color: #ffffff; /* White text */
+    padding: 5px;
+    text-align: center;
+    font-size: 10px;
+}
+
+footer p {
+    margin-left: 30px;
+}
+
+@media (max-width: 768px) {
+    .gauge-label-down {
+        left: -25px;
+        top: 4px; /* Adjust this value as needed */
+    }
+}
+@media (max-width: 768px) {
+    .gauge-label-up {
+        right: -20px;
+        top: 4px; /* Adjust this value as needed */
+    }
 }
