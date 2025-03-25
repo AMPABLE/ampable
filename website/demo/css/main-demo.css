@@ -19,7 +19,19 @@ body {
     flex-wrap: wrap;
 }
 
-.top-bar .left-group,
+/* Updated Left Group for Top Bar */
+.top-bar .left-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.top-bar .left-group .logo {
+    height: 20px;
+    width: 60px;
+}
+
+/* Footer left group remains unchanged */
 .footer-bar .left-group {
     display: flex;
     align-items: center;
@@ -363,4 +375,449 @@ hr {
 }
 .pending-dots span:nth-child(3) {
     animation-delay: 0.6s;
+}
+
+/* Status indicators in footer */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-connected {
+    background-color: #50fa7b; /* Green */
+    box-shadow: 0 0 5px #50fa7b;
+}
+
+.status-disconnected {
+    background-color: #ff5555; /* Red */
+}
+
+/* Network indicators */
+.network-ethereum {
+    color: #62688f;
+    font-weight: bold;
+}
+
+.network-optimism {
+    color: #ff0420;
+    font-weight: bold;
+}
+
+.network-polygon {
+    color: #8247e5;
+    font-weight: bold;
+}
+
+.network-arbitrum {
+    color: #28a0f0;
+    font-weight: bold;
+}
+
+.network-avalanche {
+    color: #e84142;
+    font-weight: bold;
+}
+
+.network-bsc {
+    color: #f3ba2f;
+    font-weight: bold;
+}
+
+.network-testnet {
+    color: #ff8c00;
+    font-weight: bold;
+}
+
+.network-unknown {
+    color: #abb2bf;
+    font-style: italic;
+}
+
+#disconnect-link {
+    color: #ff5555;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#disconnect-link:hover {
+    text-decoration: underline;
+}
+
+/* Create Asset Lightbox */
+.asset-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.asset-lightbox.hidden {
+    display: none;
+}
+
+.asset-lightbox-content {
+    background: #282c34;
+    width: 80%;
+    height: 80%;
+    border-radius: 8px;
+    padding: 25px;
+    position: relative;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid #5c6370;
+}
+
+.close-lightbox {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #e06c75;
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close-lightbox:hover {
+    background: rgba(224, 108, 117, 0.2);
+}
+
+#create-asset-form .form-group {
+    margin-bottom: 20px;
+}
+
+#create-asset-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #abb2bf;
+    font-weight: bold;
+}
+
+#create-asset-form .form-control {
+    width: 100%;
+    padding: 10px;
+    background: #3c4047;
+    border: 1px solid #5c6370;
+    border-radius: 4px;
+    color: #abb2bf;
+    font-size: 16px;
+}
+
+#create-asset-form .form-control:focus {
+    outline: none;
+    border-color: #61afef;
+    box-shadow: 0 0 0 2px rgba(97, 175, 239, 0.25);
+}
+
+#create-asset-form textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+#create-asset-form select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23abb2bf' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    padding-right: 30px;
+}
+
+#create-asset-form .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    justify-content: flex-end;
+}
+
+#create-asset-form .btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Form validation styles */
+#create-asset-form input:invalid,
+#create-asset-form textarea:invalid,
+#create-asset-form select:invalid {
+    border-color: #e06c75;
+}
+
+#create-asset-form input:focus:invalid,
+#create-asset-form textarea:focus:invalid,
+#create-asset-form select:focus:invalid {
+    box-shadow: 0 0 0 2px rgba(224, 108, 117, 0.25);
+}
+
+/* Custom Create Asset button in top bar */
+#create-asset-btn {
+    background: #98c379;
+    color: #282c34;
+    border: none;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+#create-asset-btn:hover {
+    background: #a6d189;
+}
+
+/* Network Switch Modal */
+.network-warning {
+    max-height: 400px;
+    height: auto;
+}
+
+.network-warning h2 {
+    color: #e06c75;
+    margin-bottom: 20px;
+}
+
+.network-warning-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.warning-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.network-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+/* For Ethereum network indicator */
+.network-ethereum.network-wrong {
+    color: #e06c75;
+    position: relative;
+}
+
+.network-ethereum.network-wrong:after {
+    content: " ❌";
+}
+
+/* For Optimism network indicator */
+.network-optimism.network-correct {
+    color: #50fa7b;
+    position: relative;
+}
+
+.network-optimism.network-correct:after {
+    content: " ✓";
+}
+
+/* Loading indicator */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(40, 44, 52, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #5c6370;
+    border-top: 5px solid #61afef;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-message {
+    color: #abb2bf;
+    font-size: 18px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Status for progressive loading stages */
+.loading-status {
+    width: 200px;
+    height: 4px;
+    background: #3c4047;
+    border-radius: 2px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.loading-status-bar {
+    height: 100%;
+    width: 0%;
+    background: #61afef;
+    transition: width 0.3s ease;
+}
+
+/* Loading dots animation for portfolio balances */
+.loading-dots {
+    display: inline-block;
+}
+
+.loading-dots span {
+    animation: loadingDots 1.5s infinite;
+    opacity: 0;
+}
+
+.loading-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 1s;
+}
+
+@keyframes loadingDots {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Portfolio refresh button */
+#refresh-portfolio-btn {
+    font-size: 12px;
+    padding: 3px 8px;
+    vertical-align: middle;
+}
+
+.refresh-icon {
+    display: inline-block;
+    font-style: normal;
+    font-weight: bold;
+    margin-right: 3px;
+}
+
+#refresh-portfolio-btn:hover .refresh-icon {
+    animation: rotate 1s linear;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* -----------------------------------------------------
+   New Top Bar Updates
+-------------------------------------------------------*/
+
+/* New grouping for search items */
+.search-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.search-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Updated styling for the right-group */
+.top-bar .right-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+/* Override Connect Wallet button to be white with dark text */
+.wallet-btn {
+    background: #fff !important;
+    color: #282c34 !important;
+    border: 1px solid #5c6370;
+}
+
+/* Group Portfolio and Add Asset buttons side by side */
+.portfolio-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .top-bar .right-group {
+        align-items: stretch;
+    }
+    .portfolio-group {
+        flex-direction: column;
+    }
+}
+
+.alert-banner {
+    background-color: #ff5555; /* Red background */
+    color: #ffffff; /* White text */
+    padding: 5px;
+    text-align: center;
+    font-size: 10px;
+}
+
+footer p {
+    margin-left: 30px;
+}
+
+@media (max-width: 768px) {
+    .gauge-label-down {
+        left: -25px;
+        top: 4px; /* Adjust this value as needed */
+    }
+}
+@media (max-width: 768px) {
+    .gauge-label-up {
+        right: -20px;
+        top: 4px; /* Adjust this value as needed */
+    }
 }
