@@ -121,7 +121,7 @@ Participants are solely responsible for their decisions. By using Ampable, you a
    - Experience the demo at `website/demo` (ensure your wallet is connected to Arbitrum 1).
 
 3. **Join the Community:**
-   - Stay updated on DAO proposals and platform improvements. Join the Discord here: [Discord Link](https://discord.gg/TmpyaM34Fn)
+   - Stay updated on DAO proposals and platform improvements. Join the Discord here: [Discord Invite Link](https://discord.gg/TmpyaM34Fn)
    - Contribute to documentation, report bugs, or submit feature requests via GitHub issues.
 
 ---
