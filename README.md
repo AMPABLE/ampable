@@ -2,9 +2,11 @@
 
 Ampable is an innovative platform built on Arbitrum that reinvents risk assessment for real-world assets. Evolving from the original Assurance Market Protocol (2017), Ampable transforms the idea into a game of skill where participants use their expertise to signal the risk associated with tokenized projects and assets.
 
-> **Note:** Ampable is strictly a game of skill—not a prediction market, gambling platform, or security offering. All game mechanics are designed to reward skill, analysis, and informed decision-making.
+> **Note:** Ampable is strictly a game of skill —not a prediction market, gambling platform, or security offering. All game mechanics are designed to reward skill, analysis, and informed decision-making. These features are designed to signal risk to others who are considering potentially taking an interest in a real-world or other type of digital asset on the Arbitrum One or Ethereum network.
 
 ---
+
+<img src="images/files/ampgamge.png" alt="Game Screenshot" style="width: 100%;" />
 
 ## Overview
 
