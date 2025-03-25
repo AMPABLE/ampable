@@ -6,7 +6,7 @@ Ampable is an innovative platform built on Arbitrum that reinvents risk assessme
 
 ---
 
-<img src="images/files/ampgamge.png" alt="Game Screenshot" style="width: 100%;" />
+<img src="media/files/ampgamge.png" alt="Game Screenshot" style="width: 100%;" />
 
 ## Overview
 
