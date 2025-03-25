@@ -37,9 +37,9 @@
                     placeholder="Search user assets..."
                 />
                 <ul id="user-token-dropdown" class="custom-dropdown"></ul>
-                <span id="live-price">Last Price: $100,030</span>
-                <button class="btn btn-secondary btn-sm" id="create-asset-btn">
-                    Create Asset
+                <span id="live-price">Last Price: $100,030</span>    
+                <button class="btn btn-secondary btn-sm" id="add-asset-btn">
+                    Add Asset
                 </button>
             </div>
             <div class="right-group">
@@ -70,6 +70,7 @@
                             src="../images/teddy.png"
                             alt="Teddy Bear"
                             class="img-fluid teddyimg"
+                            loading="lazy"
                         />
                         <div class="price-tag">$10</div>
                     </div>
@@ -124,11 +125,14 @@
                 <h2>My Portfolio</h2>
                 <p>
                     <strong>ETH Balance:</strong>
-                    <span id="eth-balance">0.55</span>
+                    <span id="eth-balance">0.00</span>
+                    <button id="refresh-portfolio-btn" class="btn btn-sm btn-secondary" style="margin-left: 15px;">
+                        <i class="refresh-icon">↻</i> Refresh
+                    </button>
                 </p>
                 <p>
                     <strong>USDC Balance:</strong>
-                    <span id="usdc-balance">$508</span>
+                    <span id="usdc-balance">$0.00</span>
                 </p>
                 <h3>Your Teddy Bears</h3>
                 <div class="teddy-container">
@@ -230,18 +234,15 @@
         </div>
 
         <footer>
-            <p>Connected to Optimism</p>
+            <p>Ampable Prediction Platform - MetaMask Integration</p>
         </footer>
 
         <!-- Include SweetAlert2 -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <!-- Web3 Library -->
-        <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
-        <!-- Ethereum Provider Detection -->
-        <script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
-
+        <!-- Web3 libraries will be loaded dynamically when needed -->
+        
         <!-- Create Asset Lightbox -->
-        <div id="create-asset-lightbox" class="asset-lightbox hidden">
+        <!-- <div id="create-asset-lightbox" class="asset-lightbox hidden">
             <div class="asset-lightbox-content">
                 <button class="close-lightbox" id="close-asset-lightbox">×</button>
                 <h2>Create New Asset</h2>
@@ -294,9 +295,27 @@
                     </div>
                 </form>
             </div>
+        </div> -->
+        
+        <!-- Network Switch Lightbox -->
+        <div id="network-switch-lightbox" class="asset-lightbox hidden">
+            <div class="asset-lightbox-content network-warning">
+                <h2>Wrong Network Detected</h2>
+                <div class="network-warning-content">
+                    <div class="warning-icon">⚠️</div>
+                    <p>You are currently connected to <span id="current-network-name">Ethereum Mainnet</span>.</p>
+                    <p>This application requires <strong>Optimism</strong> network to function properly.</p>
+                    <p>Please switch your network in MetaMask to continue using all features.</p>
+                    
+                    <div class="network-actions">
+                        <button id="switch-network-btn" class="btn btn-primary">Switch to Optimism</button>
+                        <button id="close-network-warning" class="btn btn-secondary">Continue Anyway (Limited Access)</button>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Our main JavaScript with cache busting -->
-        <script src="js/main-demo.js?v=5.1"></script>
+        <script src="js/main-demo.js?v=5.2"></script>
     </body>
 </html>
