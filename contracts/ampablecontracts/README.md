@@ -1,5 +1,9 @@
 # Ampable
 
+
+
+
+
 This README includes:
 
 - **Deployment Guide:** How to deploy the proxy and underlying contract, connect them, and verify setup.
@@ -10,6 +14,24 @@ This README includes:
 - **Frontend Integration:** How the UI interacts with smart contract functions, including views and transactions.
 - **Security Considerations:** Addressing potential vulnerabilities and mitigation strategies.
 
+
+#DAO Contracts Addresses (Arbitrum)
+
+Moloch v3 DAO
+
+`0x40054f7272b87dd7eaadb12cf14a02972b3849ae`
+
+Gnosis Safe (Treasury)
+
+`0x20c28fc483bd1b4e3187aa13f792fb64dcbd93fe`
+
+Voting Token
+
+`0x5e0f7947bb6186de2fd1cde5a8fe63656401d5b1`
+
+Non-Voting Token
+
+`0x9e445dbb8f4a298187006add36a7ad6a79d2330d`
 
 
 # Smart Contract Deployment and Integration Guide
