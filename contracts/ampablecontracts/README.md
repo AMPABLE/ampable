@@ -17,7 +17,7 @@ This README includes:
 
 #DAO Contracts Addresses (Arbitrum)
 
-Moloch v3 DAO
+Ampable DAO [https://admin.daohaus.club/#/molochv3/0xa4b1/0x40054f7272b87dd7eaadb12cf14a02972b3849a](https://admin.daohaus.club/#/molochv3/0xa4b1/0x40054f7272b87dd7eaadb12cf14a02972b3849ae)
 
 `0x40054f7272b87dd7eaadb12cf14a02972b3849ae`
 
