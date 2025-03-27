@@ -4,7 +4,8 @@
 body {
     background: #282c34;
     color: #abb2bf;
-    font-family: sans-serif;
+    font-family: "Courier New", Courier, monospace;
+
     margin: 0;
 }
 
