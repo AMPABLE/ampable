@@ -222,17 +222,36 @@ body {
     display: inline-block;
 }
 
+.teddyPrices {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
 .price-tag {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
     background: #e5c07b;
     color: #282c34;
     padding: 2px 6px;
     border-radius: 4px;
     font-weight: bold;
     font-size: 0.9rem;
+    width: 40%;
+    padding: 10px;
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.price-tag1 {
+    display: inline-block;
+
+    background: #e5c07b;
+    color: #282c34;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    width: 40%;
+    padding: 10px;
 }
 
 .teddyimg {
@@ -810,15 +829,15 @@ footer p {
     margin-left: 30px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 968px) {
     .gauge-label-down {
-        left: -25px;
+        left: -30px;
         top: 4px; /* Adjust this value as needed */
     }
 }
-@media (max-width: 768px) {
+@media (max-width: 968px) {
     .gauge-label-up {
-        right: -20px;
+        right: -30px;
         top: 4px; /* Adjust this value as needed */
     }
 }

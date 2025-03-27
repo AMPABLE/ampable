@@ -689,11 +689,11 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="needle" id="asset-needle" style="transform: rotate(60deg);"></div>
             </div>
             <div class="gauge-label-down">
-              <div id="asset-down-percent">25%</div>
+              <div id="asset-down-percent">25% (50)</div>
               <div class="small-text">Predict Down</div>
             </div>
             <div class="gauge-label-up">
-              <div id="asset-up-percent">75%</div>
+              <div id="asset-up-percent">75% (150)</div>
               <div class="small-text">Predict Up</div>
             </div>
           </div>
@@ -812,9 +812,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const upPercent = 75;
     const downPercent = 25;
 
-    document.getElementById("asset-up-percent").textContent = upPercent + "%";
+    document.getElementById("asset-up-percent").textContent =
+      upPercent + "%" + " (150)";
     document.getElementById("asset-down-percent").textContent =
-      downPercent + "%";
+      downPercent + "%" + " (50)";
 
     // Adjust rotation factor so the needle points appropriately (here, using a factor of 1.5)
     const rotation = (upPercent - 50) * 1.5;
