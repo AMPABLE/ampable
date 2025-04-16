@@ -10,6 +10,7 @@ Ampable is an innovative platform built on Arbitrum that reinvents risk assessme
 The Moloch DAO governance tokens for Ampable are here:
 
 Voting Tokens: [https://arbiscan.io/token/0x5e0f7947bb6186de2fd1cde5a8fe63656401d5b1](https://arbiscan.io/token/0x5e0f7947bb6186de2fd1cde5a8fe63656401d5b1)
+
 Non-Voting Tokens: [https://arbiscan.io/token/0x9e445dbb8f4a298187006add36a7ad6a79d2330d](https://arbiscan.io/token/0x9e445dbb8f4a298187006add36a7ad6a79d2330d)
 
 Burn to Mint URL: [https://ampable.app/burn/](https://ampable.app/burn/)
